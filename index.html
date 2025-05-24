@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fellow Schedule Parser with Call Highlighting</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .upload-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        input[type="file"] {
+            margin: 10px;
+            padding: 10px;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .fellow-selector {
+            margin: 20px 0;
+            text-align: center;
+        }
+        select {
+            padding: 8px;
+            margin: 0 10px;
+            font-size: 16px;
+        }
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .schedule-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .schedule-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .schedule-table tr:hover {
+            background-color: #e8f5e9;
+        }
+        .on-call-week {
+            background-color: #fff3cd !important;
+            border: 2px solid #ffc107;
+        }
+        .on-call-week:hover {
+            background-color: #ffe69c !important;
+        }
+        .call-indicator {
+            display: inline-block;
+            background-color: #ffc107;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .fellow-title {
+            text-align: center;
+            color: #2e7d32;
+            margin: 20px 0;
+        }
+        .stats {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .download-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .location-highlight {
+            font-weight: bold;
+            color: #1976d2;
+        }
+        .legend {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .legend-item {
+            display: inline-block;
+            margin: 0 15px;
+        }
+        .legend-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #ccc;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        .legend-call {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fellow Schedule Parser with Call Highlighting</h1>
+        
+        <div class="upload-section">
+            <h3>Upload Excel Schedule File</h3>
+            <p>Make sure your Excel file contains both the main schedule and call schedule sheets</p>
+            <input type="file" id="fileInput" accept=".xlsx,.xls">
+            <br><br>
+            <button class="button" onclick="parseFile()">Parse Schedule</button>
+        </div>
+
+        <div id="fellowSection" class="hidden">
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-box legend-call"></span>
+                    <span>On Call Week</span>
+                </div>
+            </div>
+
+            <div class="fellow-selector">
+                <label for="fellowSelect">Select Fellow:</label>
+                <select id="fellowSelect" onchange="displayFellowSchedule()">
+                    <option value="">-- Select a Fellow --</option>
+                </select>
+                <button class="button" onclick="downloadCurrentSchedule()">Download Current Schedule</button>
+                <button class="button" onclick="downloadAllSchedules()">Download All Schedules</button>
+            </div>
+
+            <div id="scheduleDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        let scheduleData = [];
+        let fellows = [];
+        let fellowSchedules = {};
+        let callSchedule = {};
+
+        function parseFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file first!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // Process main schedule (first sheet)
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const mainScheduleData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+                
+                // Process call schedule (look for a sheet with "call" in the name)
+                let callSheetData = null;
+                for (let sheetName of workbook.SheetNames) {
+                    if (sheetName.toLowerCase().includes('call')) {
+                        const callSheet = workbook.Sheets[sheetName];
+                        callSheetData = XLSX.utils.sheet_to_json(callSheet, { header: 1, defval: '' });
+                        break;
+                    }
+                }
+                
+                processScheduleData(mainScheduleData, callSheetData);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function processCallSchedule(callData) {
+            if (!callData || callData.length < 2) return;
+            
+            const headers = callData[0];
+            const rows = callData.slice(1);
+            
+            // Find column indices for Week and Call
+            let weekIndex = -1;
+            let callIndex = -1;
+            
+            headers.forEach((header, index) => {
+                if (header.toLowerCase().includes('week')) weekIndex = index;
+                if (header.toLowerCase().includes('call')) callIndex = index;
+            });
+            
+            if (weekIndex === -1 || callIndex === -1) return;
+            
+            // Process call schedule
+            callSchedule = {};
+            rows.forEach(row => {
+                const week = row[weekIndex];
+                const fellow = row[callIndex];
+                
+                if (week && fellow) {
+                    if (!callSchedule[fellow]) {
+                        callSchedule[fellow] = [];
+                    }
+                    callSchedule[fellow].push(week);
+                }
+            });
+        }
+
+        function isOnCallWeek(fellow, week) {
+            if (!callSchedule[fellow] || !week) return false;
+            
+            // Check if the fellow is on call during this week
+            return callSchedule[fellow].some(callWeek => {
+                // Parse the call week dates
+                const callDates = callWeek.split('-');
+                if (callDates.length >= 2) {
+                    // Extract month/day from the call week
+                    const callStart = callDates[0].trim();
+                    const callEnd = callDates[1].trim();
+                    
+                    // Check if the current week overlaps with the call week
+                    // This is a simplified check - you might need to adjust based on your date format
+                    return week.includes(callStart) || week.includes(callEnd) || 
+                           callWeek.includes(week.split('-')[0]) || callWeek.includes(week.split('-')[1]);
+                }
+                return false;
+            });
+        }
+
+        function processScheduleData(data, callData) {
+            // First process the call schedule
+            processCallSchedule(callData);
+            
+            // Extract headers and data
+            const headers = data[0];
+            const rows = data.slice(1);
+            
+            // Assignment columns to check
+            const assignmentColumns = [
+                'UMH 1', 'UMH2', 'VA1', 'VA 2', 'VA 3', 'VA 4', 'Amb1', 
+                'EOD1', 'EOD2/Private Research', 'Elective (PGY)', 'Vacations'
+            ];
+            
+            // Find column indices
+            const columnIndices = {};
+            headers.forEach((header, index) => {
+                columnIndices[header] = index;
+            });
+
+            // Find all unique fellows
+            const fellowSet = new Set();
+            rows.forEach(row => {
+                assignmentColumns.forEach(col => {
+                    if (columnIndices[col] !== undefined) {
+                        const value = row[columnIndices[col]];
+                        if (value && typeof value === 'string' && value.trim().length > 0 && value.trim().length <= 3) {
+                            fellowSet.add(value.trim());
+                        }
+                    }
+                });
+            });
+
+            fellows = Array.from(fellowSet).sort();
+            
+            // Create schedule for each fellow
+            fellowSchedules = {};
+            fellows.forEach(fellow => {
+                fellowSchedules[fellow] = [];
+            });
+
+            // Process each row
+            let currentDateRange = '';
+            rows.forEach(row => {
+                const dateRange = row[columnIndices['Dates']] || currentDateRange;
+                if (dateRange) currentDateRange = dateRange;
+                
+                const week = row[columnIndices['Week']];
+                const notes = row[columnIndices['Notes']] || '';
+                const vacations = row[columnIndices['Vacations']] || '';
+
+                // Check each assignment column for each fellow
+                fellows.forEach(fellow => {
+                    assignmentColumns.forEach(col => {
+                        if (columnIndices[col] !== undefined && row[columnIndices[col]] === fellow) {
+                            const isOnCall = isOnCallWeek(fellow, week);
+                            
+                            fellowSchedules[fellow].push({
+                                dateRange: currentDateRange,
+                                week: week,
+                                location: col,
+                                notes: notes,
+                                vacation: vacations.includes(fellow) ? 'Vacation' : '',
+                                onCall: isOnCall
+                            });
+                        }
+                    });
+                });
+            });
+
+            // Populate fellow selector
+            const select = document.getElementById('fellowSelect');
+            select.innerHTML = '<option value="">-- Select a Fellow --</option>';
+            fellows.forEach(fellow => {
+                const option = document.createElement('option');
+                option.value = fellow;
+                option.textContent = fellow;
+                select.appendChild(option);
+            });
+
+            document.getElementById('fellowSection').classList.remove('hidden');
+            
+            let message = `Successfully parsed schedule! Found ${fellows.length} fellows.`;
+            if (Object.keys(callSchedule).length > 0) {
+                message += ` Call schedule loaded.`;
+            } else {
+                message += ` No call schedule found - make sure your Excel file has a sheet with "call" in the name.`;
+            }
+            alert(message);
+        }
+
+        function displayFellowSchedule() {
+            const selectedFellow = document.getElementById('fellowSelect').value;
+            const displayDiv = document.getElementById('scheduleDisplay');
+            
+            if (!selectedFellow) {
+                displayDiv.innerHTML = '';
+                return;
+            }
+
+            const schedule = fellowSchedules[selectedFellow];
+            
+            let html = `<h2 class="fellow-title">Schedule for Fellow: ${selectedFellow}</h2>`;
+            
+            // Add statistics
+            const stats = calculateStats(schedule);
+            html += `<div class="stats">
+                <strong>Total Assignments:</strong> ${stats.total}<br>
+                <strong>Locations:</strong> ${stats.locations.join(', ')}<br>
+                <strong>Vacation Weeks:</strong> ${stats.vacationWeeks}<br>
+                <strong>Call Weeks:</strong> ${stats.callWeeks}
+            </div>`;
+            
+            // Create table
+            html += `<table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Date Range</th>
+                        <th>Week</th>
+                        <th>Location</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            schedule.forEach(entry => {
+                const rowClass = entry.onCall ? 'on-call-week' : '';
+                html += `<tr class="${rowClass}">
+                    <td>${entry.dateRange}</td>
+                    <td>${entry.week}${entry.onCall ? '<span class="call-indicator">ON CALL</span>' : ''}</td>
+                    <td class="location-highlight">${entry.location}</td>
+                    <td>${entry.vacation ? '🏖️ ' + entry.vacation : ''}${entry.vacation && entry.notes ? ' | ' : ''}${entry.notes}</td>
+                </tr>`;
+            });
+            
+            html += `</tbody></table>`;
+            displayDiv.innerHTML = html;
+        }
+
+        function calculateStats(schedule) {
+            const locations = [...new Set(schedule.map(s => s.location))];
+            const vacationWeeks = schedule.filter(s => s.vacation).length;
+            const callWeeks = schedule.filter(s => s.onCall).length;
+            return {
+                total: schedule.length,
+                locations: locations,
+                vacationWeeks: vacationWeeks,
+                callWeeks: callWeeks
+            };
+        }
+
+        function downloadCurrentSchedule() {
+            const selectedFellow = document.getElementById('fellowSelect').value;
+            if (!selectedFellow) {
+                alert('Please select a fellow first!');
+                return;
+            }
+            
+            downloadScheduleAsExcel(selectedFellow);
+        }
+
+        function downloadAllSchedules() {
+            if (fellows.length === 0) {
+                alert('No schedules to download!');
+                return;
+            }
+            
+            const wb = XLSX.utils.book_new();
+            
+            fellows.forEach(fellow => {
+                const ws = createWorksheetForFellow(fellow);
+                XLSX.utils.book_append_sheet(wb, ws, fellow);
+            });
+            
+            XLSX.writeFile(wb, 'All_Fellow_Schedules.xlsx');
+        }
+
+        function downloadScheduleAsExcel(fellow) {
+            const wb = XLSX.utils.book_new();
+            const ws = createWorksheetForFellow(fellow);
+            XLSX.utils.book_append_sheet(wb, ws, fellow);
+            XLSX.writeFile(wb, `Schedule_${fellow}.xlsx`);
+        }
+
+        function createWorksheetForFellow(fellow) {
+            const schedule = fellowSchedules[fellow];
+            const wsData = [['Date Range', 'Week', 'Location', 'On Call', 'Notes']];
+            
+            schedule.forEach(entry => {
+                wsData.push([
+                    entry.dateRange,
+                    entry.week,
+                    entry.location,
+                    entry.onCall ? 'Yes' : '',
+                    (entry.vacation ? entry.vacation + ' | ' : '') + entry.notes
+                ]);
+            });
+            
+            return XLSX.utils.aoa_to_sheet(wsData);
+        }
+    </script>
+</body>
+</html>
