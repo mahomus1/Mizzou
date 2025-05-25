@@ -2,471 +2,513 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fellow Schedule Parser with Call Highlighting</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fellows Schedule</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            padding: 10px;
+            margin: 0;
             background-color: #f5f5f5;
         }
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background-color: white;
-            padding: 20px;
+            background: white;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         h1 {
             color: #333;
             text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
-        .upload-section {
-            text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            background-color: #fafafa;
-        }
-        input[type="file"] {
-            margin: 10px;
-            padding: 10px;
-        }
-        .button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        .button:hover {
-            background-color: #45a049;
-        }
-        .fellow-selector {
-            margin: 20px 0;
+        
+        .controls {
+            margin-bottom: 20px;
             text-align: center;
         }
+        
         select {
-            padding: 8px;
-            margin: 0 10px;
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 16px;
             font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
         }
-        .schedule-table {
+        
+        select:hover {
+            border-color: #aaa;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        .table-wrapper {
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            max-height: calc(100vh - 200px);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            min-width: 800px;
         }
-        .schedule-table th, .schedule-table td {
+        
+        th, td {
+            padding: 10px 8px;
+            text-align: center;
             border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            white-space: nowrap;
+            font-size: 14px;
         }
-        .schedule-table th {
+        
+        th {
             background-color: #4CAF50;
             color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        .schedule-table tr:nth-child(even) {
+        
+        th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+            border-right: 2px solid #388E3C;
+            min-width: 100px;
+        }
+        
+        tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        .schedule-table tr:hover {
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .week-column {
             background-color: #e8f5e9;
+            font-weight: bold;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            border-right: 2px solid #ddd;
+            min-width: 100px;
         }
-        .on-call-week {
+        
+        .highlight {
             background-color: #fff3cd !important;
-            border: 2px solid #ffc107;
+            font-weight: bold;
         }
-        .on-call-week:hover {
-            background-color: #ffe69c !important;
+        
+        .fellow-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
         }
-        .call-indicator {
-            display: inline-block;
-            background-color: #ffc107;
-            color: #000;
+        
+        .mobile-hint {
+            display: none;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .view-toggle {
+            display: none;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .toggle-btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: 2px solid #4CAF50;
+            background: white;
+            color: #4CAF50;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .toggle-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .mobile-view {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .rotation-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .rotation-card h3 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+            font-size: 18px;
+        }
+        
+        .rotation-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .rotation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .rotation-type {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .rotation-value {
+            color: #333;
+        }
+        
+        .rotation-value.highlight-mobile {
+            background-color: #fff3cd;
             padding: 2px 8px;
             border-radius: 4px;
-            font-size: 12px;
             font-weight: bold;
-            margin-left: 8px;
         }
-        .fellow-title {
-            text-align: center;
-            color: #2e7d32;
-            margin: 20px 0;
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                padding: 10px;
+                border-radius: 0;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            .mobile-hint {
+                display: block;
+            }
+            
+            .view-toggle {
+                display: block;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 12px;
+            }
+            
+            .table-wrapper {
+                max-height: calc(100vh - 280px);
+            }
         }
-        .stats {
-            background-color: #e8f5e9;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 15px 0;
-        }
-        .download-section {
-            text-align: center;
-            margin: 20px 0;
-        }
-        .hidden {
-            display: none;
-        }
-        .location-highlight {
-            font-weight: bold;
-            color: #1976d2;
-        }
-        .legend {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .legend-item {
-            display: inline-block;
-            margin: 0 15px;
-        }
-        .legend-box {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 1px solid #ccc;
-            vertical-align: middle;
-            margin-right: 5px;
-        }
-        .legend-call {
-            background-color: #fff3cd;
-            border: 2px solid #ffc107;
+        
+        @media (max-width: 480px) {
+            th, td {
+                padding: 6px 4px;
+                font-size: 11px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Fellow Schedule Parser with Call Highlighting</h1>
+        <h1>Fellows Rotation Schedule</h1>
         
-        <div class="upload-section">
-            <h3>Upload Excel Schedule File</h3>
-            <p>Make sure your Excel file contains both the main schedule and call schedule sheets</p>
-            <input type="file" id="fileInput" accept=".xlsx,.xls">
-            <br><br>
-            <button class="button" onclick="parseFile()">Parse Schedule</button>
+        <div class="controls">
+            <label class="fellow-label">Select Fellow:</label>
+            <select id="fellowSelect">
+                <option value="all">All Fellows</option>
+                <option value="ZT">ZT</option>
+                <option value="MM">MM</option>
+                <option value="XD">XD</option>
+                <option value="DF">DF</option>
+                <option value="MG">MG</option>
+                <option value="IM">IM</option>
+                <option value="AA">AA</option>
+                <option value="EZ">EZ</option>
+                <option value="AM">AM</option>
+                <option value="MD">MD</option>
+            </select>
         </div>
-
-        <div id="fellowSection" class="hidden">
-            <div class="legend">
-                <div class="legend-item">
-                    <span class="legend-box legend-call"></span>
-                    <span>On Call Week</span>
-                </div>
+        
+        <div class="view-toggle" id="viewToggle">
+            <button class="toggle-btn active" id="tableViewBtn">Table View</button>
+            <button class="toggle-btn" id="cardViewBtn">Card View</button>
+        </div>
+        
+        <div id="tableView">
+            <div class="table-wrapper">
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>UMH 1</th>
+                            <th>UMH2</th>
+                            <th>VA1</th>
+                            <th>VA 2</th>
+                            <th>VA 3</th>
+                            <th>VA 4</th>
+                            <th>Amb1</th>
+                            <th>EOD1</th>
+                            <th>EOD2</th>
+                            <th>Research</th>
+                            <th>Elective</th>
+                            <th>Vacations</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Table content will be populated by JavaScript -->
+                    </tbody>
+                </table>
             </div>
-
-            <div class="fellow-selector">
-                <label for="fellowSelect">Select Fellow:</label>
-                <select id="fellowSelect" onchange="displayFellowSchedule()">
-                    <option value="">-- Select a Fellow --</option>
-                </select>
-                <button class="button" onclick="downloadCurrentSchedule()">Download Current Schedule</button>
-                <button class="button" onclick="downloadAllSchedules()">Download All Schedules</button>
+            <div class="mobile-hint">
+                <p>← Swipe horizontally to see all rotations →</p>
             </div>
-
-            <div id="scheduleDisplay"></div>
+        </div>
+        
+        <div class="mobile-view" id="mobileView">
+            <!-- Mobile card view will be populated by JavaScript -->
         </div>
     </div>
 
     <script>
-        let scheduleData = [];
-        let fellows = [];
-        let fellowSchedules = {};
-        let callSchedule = {};
-
-        function parseFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
+        // Schedule data embedded directly
+        const scheduleData = [
+          {"Week":"6/30-7/4","UMH 1":"MG","UMH2":"ZT","VA1":"DF","VA 2":"XD","VA 3":"","VA 4":"","Amb1":"IM","EOD1":"MM","EOD2":"","Research":"","Elective":"","Vacations":""},
+          {"Week":"7/7- 7/11","UMH 1":"ZT","UMH2":"MG","VA1":"IM","VA 2":"MM","VA 3":"","VA 4":"","Amb1":"DF","EOD1":"XD","EOD2":"","Research":"","Elective":"","Vacations":""},
+          {"Week":"7/14-7/18","UMH 1":"IM","UMH2":"DF","VA1":"MG","VA 2":"EZ","VA 3":"AM","VA 4":"MM","Amb1":"AA","EOD1":"XD","EOD2":"ZT","Research":"MD","Elective":"","Vacations":""},
+          {"Week":"7/21-7/25","UMH 1":"DF","UMH2":"IM","VA1":"MG","VA 2":"ZT","VA 3":"EZ","VA 4":"MD","Amb1":"AM","EOD1":"MM","EOD2":"XD","Research":"","Elective":"","Vacations":"AA"},
+          {"Week":"7/28-8/1","UMH 1":"ZT","UMH2":"MG","VA1":"AA","VA 2":"MD","VA 3":"XD","VA 4":"DF","Amb1":"EZ","EOD1":"MM","EOD2":"","Research":"AM","Elective":"","Vacations":"IM"},
+          {"Week":"8/4-8/8","UMH 1":"MG","UMH2":"ZT","VA1":"AM","VA 2":"DF","VA 3":"MM","VA 4":"AA","Amb1":"MD","EOD1":"XD","EOD2":"","Research":"EZ","Elective":"","Vacations":"IM"},
+          {"Week":"8/11- 8/15","UMH 1":"DF","UMH2":"XD","VA1":"MD","VA 2":"MG","VA 3":"IM","VA 4":"AA","Amb1":"EZ","EOD1":"ZT","EOD2":"MM","Research":"","Elective":"","Vacations":"AM"},
+          {"Week":"8/18-8/22","UMH 1":"XD","UMH2":"DF","VA1":"EZ","VA 2":"IM","VA 3":"MG","VA 4":"AA","Amb1":"AM","EOD1":"ZT","EOD2":"","Research":"MD","Elective":"MM","Vacations":""},
+          {"Week":"8/25-8/29","UMH 1":"MM","UMH2":"AM","VA1":"MD","VA 2":"DF","VA 3":"MG","VA 4":"IM","Amb1":"EZ","EOD1":"ZT","EOD2":"","Research":"AA","Elective":"","Vacations":"XD"},
+          {"Week":"9/1-9/5","UMH 1":"AM","UMH2":"MM","VA1":"IM","VA 2":"MG","VA 3":"DF","VA 4":"","Amb1":"MD","EOD1":"XD","EOD2":"ZT","Research":"EZ","Elective":"","Vacations":"AA"},
+          {"Week":"9/8-9/12","UMH 1":"IM","UMH2":"AA","VA1":"XD","VA 2":"MD","VA 3":"DF","VA 4":"AM","Amb1":"EZ","EOD1":"ZT","EOD2":"MM","Research":"","Elective":"","Vacations":"MG"},
+          {"Week":"9/15-9/19","UMH 1":"AA","UMH2":"IM","VA1":"MD","VA 2":"MG","VA 3":"DF","VA 4":"EZ","Amb1":"AM","EOD1":"XD","EOD2":"ZT","Research":"MM","Elective":"","Vacations":""},
+          {"Week":"9/22-9/26","UMH 1":"MG","UMH2":"MD","VA1":"DF","VA 2":"EZ","VA 3":"IM","VA 4":"ZT","Amb1":"AA","EOD1":"XD","EOD2":"","Research":"AM","Elective":"MM","Vacations":""},
+          {"Week":"9/29-10/3","UMH 1":"MD","UMH2":"MG","VA1":"AM","VA 2":"XD","VA 3":"AA","VA 4":"IM","Amb1":"DF","EOD1":"MM","EOD2":"","Research":"EZ","Elective":"ZT","Vacations":""},
+          {"Week":"10/6-10/10","UMH 1":"EZ","UMH2":"DF","VA1":"AM","VA 2":"MG","VA 3":"IM","VA 4":"","Amb1":"AA","EOD1":"XD","EOD2":"ZT","Research":"MD","Elective":"","Vacations":"MM"},
+          {"Week":"10/13-10/17","UMH 1":"DF","UMH2":"EZ","VA1":"AA","VA 2":"AM","VA 3":"IM","VA 4":"MG","Amb1":"MD","EOD1":"XD","EOD2":"ZT","Research":"MM","Elective":"","Vacations":""},
+          {"Week":"10/20-10/24","UMH 1":"AA","UMH2":"AM","VA1":"MD","VA 2":"XD","VA 3":"MG","VA 4":"DF","Amb1":"EZ","EOD1":"ZT","EOD2":"MM","Research":"IM","Elective":"","Vacations":""},
+          {"Week":"10/27-10/31","UMH 1":"AM","UMH2":"AA","VA1":"EZ","VA 2":"IM","VA 3":"MG","VA 4":"XD","Amb1":"MD","EOD1":"MM","EOD2":"","Research":"DF","Elective":"","Vacations":"ZT"},
+          {"Week":"11/3-11/7","UMH 1":"IM","UMH2":"MD","VA1":"DF","VA 2":"AM","VA 3":"ZT","VA 4":"","Amb1":"MG","EOD1":"MM","EOD2":"","Research":"AA","Elective":"XD","Vacations":"EZ"},
+          {"Week":"11/10-11/14","UMH 1":"MD","UMH2":"IM","VA1":"MG","VA 2":"EZ","VA 3":"DF","VA 4":"","Amb1":"AM","EOD1":"ZT","EOD2":"XD","Research":"MM","Elective":"","Vacations":"AA"},
+          {"Week":"11/17-11/21","UMH 1":"EZ","UMH2":"MD","VA1":"MG","VA 2":"AA","VA 3":"DF","VA 4":"","Amb1":"IM","EOD1":"ZT","EOD2":"XD","Research":"AM","Elective":"","Vacations":"MM"},
+          {"Week":"11/24-11/28","UMH 1":"MD","UMH2":"EZ","VA1":"IM","VA 2":"ZT","VA 3":"DF","VA 4":"MG","Amb1":"AA","EOD1":"MM","EOD2":"","Research":"XD","Elective":"","Vacations":"AM"},
+          {"Week":"12/1-12/5","UMH 1":"AA","UMH2":"AM","VA1":"XD","VA 2":"EZ","VA 3":"MG","VA 4":"","Amb1":"DF","EOD1":"ZT","EOD2":"","Research":"IM","Elective":"MM","Vacations":"MD"},
+          {"Week":"12/8-12/12","UMH 1":"AM","UMH2":"AA","VA1":"IM","VA 2":"DF","VA 3":"EZ","VA 4":"","Amb1":"MG","EOD1":"XD","EOD2":"MM","Research":"","Elective":"ZT","Vacations":"MD"},
+          {"Week":"12/15-12/19","UMH 1":"DF","UMH2":"EZ","VA1":"IM","VA 2":"AA","VA 3":"MG","VA 4":"","Amb1":"AM","EOD1":"MM","EOD2":"XD","Research":"MD","Elective":"","Vacations":"ZT"},
+          {"Week":"12/22-12-26","UMH 1":"EZ","UMH2":"DF","VA1":"MM","VA 2":"AA","VA 3":"MG","VA 4":"MD","Amb1":"IM","EOD1":"XD","EOD2":"","Research":"","Elective":"AM","Vacations":"ZT"},
+          {"Week":"12/29-1/2/26","UMH 1":"MG","UMH2":"MD","VA1":"IM","VA 2":"XD","VA 3":"EZ","VA 4":"AM","Amb1":"AA","EOD1":"MM","EOD2":"","Research":"ZT","Elective":"","Vacations":"DF"},
+          {"Week":"01/05-01/09","UMH 1":"MD","UMH2":"MG","VA1":"AA","VA 2":"AM","VA 3":"IM","VA 4":"MM","Amb1":"EZ","EOD1":"ZT","EOD2":"","Research":"DF","Elective":"","Vacations":"XD"},
+          {"Week":"01/12-01/16","UMH 1":"AA","UMH2":"AM","VA1":"MD","VA 2":"IM","VA 3":"DF","VA 4":"EZ","Amb1":"MG","EOD1":"MM","EOD2":"ZT","Research":"","Elective":"","Vacations":"XD"},
+          {"Week":"01/19-01/23","UMH 1":"AM","UMH2":"AA","VA1":"EZ","VA 2":"MM","VA 3":"MD","VA 4":"DF","Amb1":"IM","EOD1":"ZT","EOD2":"","Research":"XD","Elective":"","Vacations":"MG"},
+          {"Week":"01/26-01/30","UMH 1":"MM","UMH2":"EZ","VA1":"IM","VA 2":"AA","VA 3":"DF","VA 4":"","Amb1":"MD","EOD1":"ZT","EOD2":"","Research":"AM","Elective":"XD","Vacations":"MG"},
+          {"Week":"02/02-02/06","UMH 1":"EZ","UMH2":"MM","VA1":"ZT","VA 2":"DF","VA 3":"AM","VA 4":"MD","Amb1":"AA","EOD1":"XD","EOD2":"","Research":"MG","Elective":"","Vacations":"IM"},
+          {"Week":"02/09-02/13","UMH 1":"XD","UMH2":"MD","VA1":"MG","VA 2":"EZ","VA 3":"DF","VA 4":"","Amb1":"AM","EOD1":"ZT","EOD2":"MM","Research":"AA","Elective":"","Vacations":"IM"},
+          {"Week":"02/16-02/20","UMH 1":"MD","UMH2":"XD","VA1":"DF","VA 2":"AM","VA 3":"MG","VA 4":"","Amb1":"AA","EOD1":"MM","EOD2":"","Research":"IM","Elective":"ZT","Vacations":"EZ"},
+          {"Week":"02/23-02/27","UMH 1":"AA","UMH2":"IM","VA1":"AM","VA 2":"ZT","VA 3":"MD","VA 4":"MM","Amb1":"DF","EOD1":"XD","EOD2":"","Research":"MG","Elective":"","Vacations":"EZ"},
+          {"Week":"03/02-03/06","UMH 1":"IM","UMH2":"AA","VA1":"AM","VA 2":"DF","VA 3":"MG","VA 4":"","Amb1":"MD","EOD1":"ZT","EOD2":"MM","Research":"EZ","Elective":"XD","Vacations":""},
+          {"Week":"03/09-03/13","UMH 1":"EZ","UMH2":"AM","VA1":"AA","VA 2":"MD","VA 3":"IM","VA 4":"","Amb1":"MG","EOD1":"MM","EOD2":"ZT","Research":"DF","Elective":"XD","Vacations":""},
+          {"Week":"03/16-03/20","UMH 1":"AM","UMH2":"EZ","VA1":"AA","VA 2":"MG","VA 3":"DF","VA 4":"","Amb1":"MD","EOD1":"XD","EOD2":"MM","Research":"IM","Elective":"ZT","Vacations":""},
+          {"Week":"03/23-03/27","UMH 1":"MG","UMH2":"MD","VA1":"EZ","VA 2":"DF","VA 3":"IM","VA 4":"","Amb1":"AM","EOD1":"MM","EOD2":"XD","Research":"ZT","Elective":"","Vacations":"AA"},
+          {"Week":"03/30-04/03","UMH 1":"MD","UMH2":"MG","VA1":"ZT","VA 2":"AA","VA 3":"IM","VA 4":"AM","Amb1":"EZ","EOD1":"MM","EOD2":"","Research":"XD","Elective":"","Vacations":"DF"},
+          {"Week":"04/06-04/10","UMH 1":"AA","UMH2":"AM","VA1":"EZ","VA 2":"IM","VA 3":"MG","VA 4":"","Amb1":"MD","EOD1":"XD","EOD2":"ZT","Research":"","Elective":"MM","Vacations":"DF"},
+          {"Week":"04/13-04/17","UMH 1":"AM","UMH2":"AA","VA1":"MG","VA 2":"MD","VA 3":"EZ","VA 4":"IM","Amb1":"DF","EOD1":"ZT","EOD2":"XD","Research":"","Elective":"","Vacations":"MM"},
+          {"Week":"04/20-04/24","UMH 1":"DF","UMH2":"EZ","VA1":"AA","VA 2":"MD","VA 3":"MG","VA 4":"IM","Amb1":"AM","EOD1":"ZT","EOD2":"XD","Research":"","Elective":"","Vacations":"MM"},
+          {"Week":"04/27-05/01","UMH 1":"EZ","UMH2":"DF","VA1":"AA","VA 2":"AM","VA 3":"ZT","VA 4":"MG","Amb1":"IM","EOD1":"XD","EOD2":"","Research":"MM","Elective":"","Vacations":"MD"},
+          {"Week":"05/04-05/08","UMH 1":"AM","UMH2":"IM","VA1":"DF","VA 2":"MM","VA 3":"EZ","VA 4":"","Amb1":"AA","EOD1":"ZT","EOD2":"XD","Research":"MG","Elective":"","Vacations":"MD"},
+          {"Week":"5/11-5/15","UMH 1":"IM","UMH2":"AM","VA1":"MD","VA 2":"ZT","VA 3":"DF","VA 4":"","Amb1":"EZ","EOD1":"MM","EOD2":"XD","Research":"AA","Elective":"","Vacations":"MG"},
+          {"Week":"05/18-05/22","UMH 1":"MD","UMH2":"MG","VA1":"MM","VA 2":"EZ","VA 3":"AA","VA 4":"","Amb1":"IM","EOD1":"XD","EOD2":"ZT","Research":"DF","Elective":"","Vacations":"AM"},
+          {"Week":"05/25-05/29","UMH 1":"MG","UMH2":"MD","VA1":"AM","VA 2":"IM","VA 3":"XD","VA 4":"AA","Amb1":"EZ","EOD1":"MM","EOD2":"","Research":"ZT","Elective":"","Vacations":"DF"},
+          {"Week":"06/01-06/05","UMH 1":"DF","UMH2":"AA","VA1":"AM","VA 2":"MD","VA 3":"IM","VA 4":"","Amb1":"MG","EOD1":"ZT","EOD2":"MM","Research":"XD","Elective":"","Vacations":"EZ"},
+          {"Week":"06/08-06/12","UMH 1":"AA","UMH2":"DF","VA1":"EZ","VA 2":"IM","VA 3":"MD","VA 4":"","Amb1":"AM","EOD1":"MM","EOD2":"ZT","Research":"MG","Elective":"","Vacations":"XD"},
+          {"Week":"06/15-06/19","UMH 1":"EZ","UMH2":"IM","VA1":"DF","VA 2":"AM","VA 3":"MG","VA 4":"AA","Amb1":"MD","EOD1":"MM","EOD2":"XD","Research":"ZT","Elective":"","Vacations":""},
+          {"Week":"06/22-06/26","UMH 1":"IM","UMH2":"EZ","VA1":"MD","VA 2":"MG","VA 3":"DF","VA 4":"AM","Amb1":"AA","EOD1":"XD","EOD2":"MM","Research":"","Elective":"","Vacations":"ZT"},
+          {"Week":"06/29-07/03","UMH 1":"","UMH2":"","VA1":"","VA 2":"","VA 3":"","VA 4":"","Amb1":"","EOD1":"","EOD2":"","Research":"","Elective":"","Vacations":""}
+        ];
+        
+        const rotations = ['UMH 1', 'UMH2', 'VA1', 'VA 2', 'VA 3', 'VA 4', 'Amb1', 'EOD1', 'EOD2', 'Research', 'Elective', 'Vacations'];
+        
+        // Render table based on selected fellow
+        function renderTable(selectedFellow) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
             
-            if (!file) {
-                alert('Please select a file first!');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
+            scheduleData.forEach(row => {
+                const tr = document.createElement('tr');
                 
-                // Process main schedule (first sheet)
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const mainScheduleData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+                // Week column
+                const weekTd = document.createElement('td');
+                weekTd.textContent = row['Week'] || '';
+                weekTd.className = 'week-column';
+                tr.appendChild(weekTd);
                 
-                // Process call schedule (look for a sheet with "call" in the name)
-                let callSheetData = null;
-                for (let sheetName of workbook.SheetNames) {
-                    if (sheetName.toLowerCase().includes('call')) {
-                        const callSheet = workbook.Sheets[sheetName];
-                        callSheetData = XLSX.utils.sheet_to_json(callSheet, { header: 1, defval: '' });
-                        break;
-                    }
-                }
-                
-                processScheduleData(mainScheduleData, callSheetData);
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function processCallSchedule(callData) {
-            if (!callData || callData.length < 2) return;
-            
-            const headers = callData[0];
-            const rows = callData.slice(1);
-            
-            // Find column indices for Week and Call
-            let weekIndex = -1;
-            let callIndex = -1;
-            
-            headers.forEach((header, index) => {
-                if (header.toLowerCase().includes('week')) weekIndex = index;
-                if (header.toLowerCase().includes('call')) callIndex = index;
-            });
-            
-            if (weekIndex === -1 || callIndex === -1) return;
-            
-            // Process call schedule
-            callSchedule = {};
-            rows.forEach(row => {
-                const week = row[weekIndex];
-                const fellow = row[callIndex];
-                
-                if (week && fellow) {
-                    if (!callSchedule[fellow]) {
-                        callSchedule[fellow] = [];
-                    }
-                    callSchedule[fellow].push(week);
-                }
-            });
-        }
-
-        function isOnCallWeek(fellow, week) {
-            if (!callSchedule[fellow] || !week) return false;
-            
-            // Check if the fellow is on call during this week
-            return callSchedule[fellow].some(callWeek => {
-                // Parse the call week dates
-                const callDates = callWeek.split('-');
-                if (callDates.length >= 2) {
-                    // Extract month/day from the call week
-                    const callStart = callDates[0].trim();
-                    const callEnd = callDates[1].trim();
+                // Rotation columns
+                rotations.forEach(rotation => {
+                    const td = document.createElement('td');
+                    const value = row[rotation] || '';
+                    td.textContent = value;
                     
-                    // Check if the current week overlaps with the call week
-                    // This is a simplified check - you might need to adjust based on your date format
-                    return week.includes(callStart) || week.includes(callEnd) || 
-                           callWeek.includes(week.split('-')[0]) || callWeek.includes(week.split('-')[1]);
+                    // Highlight if this cell contains the selected fellow
+                    if (selectedFellow !== 'all' && value === selectedFellow) {
+                        td.className = 'highlight';
+                    }
+                    
+                    tr.appendChild(td);
+                });
+                
+                // Only show row if it contains the selected fellow or if showing all
+                if (selectedFellow === 'all' || Object.values(row).includes(selectedFellow)) {
+                    tbody.appendChild(tr);
                 }
-                return false;
             });
         }
-
-        function processScheduleData(data, callData) {
-            // First process the call schedule
-            processCallSchedule(callData);
+        
+        // Render mobile card view
+        function renderMobileView(selectedFellow) {
+            const mobileView = document.getElementById('mobileView');
+            mobileView.innerHTML = '';
             
-            // Extract headers and data
-            const headers = data[0];
-            const rows = data.slice(1);
-            
-            // Assignment columns to check
-            const assignmentColumns = [
-                'UMH 1', 'UMH2', 'VA1', 'VA 2', 'VA 3', 'VA 4', 'Amb1', 
-                'EOD1', 'EOD2/Private Research', 'Elective (PGY)', 'Vacations'
-            ];
-            
-            // Find column indices
-            const columnIndices = {};
-            headers.forEach((header, index) => {
-                columnIndices[header] = index;
-            });
-
-            // Find all unique fellows
-            const fellowSet = new Set();
-            rows.forEach(row => {
-                assignmentColumns.forEach(col => {
-                    if (columnIndices[col] !== undefined) {
-                        const value = row[columnIndices[col]];
-                        if (value && typeof value === 'string' && value.trim().length > 0 && value.trim().length <= 3) {
-                            fellowSet.add(value.trim());
-                        }
-                    }
-                });
-            });
-
-            fellows = Array.from(fellowSet).sort();
-            
-            // Create schedule for each fellow
-            fellowSchedules = {};
-            fellows.forEach(fellow => {
-                fellowSchedules[fellow] = [];
-            });
-
-            // Process each row
-            let currentDateRange = '';
-            rows.forEach(row => {
-                const dateRange = row[columnIndices['Dates']] || currentDateRange;
-                if (dateRange) currentDateRange = dateRange;
-                
-                const week = row[columnIndices['Week']];
-                const notes = row[columnIndices['Notes']] || '';
-                const vacations = row[columnIndices['Vacations']] || '';
-
-                // Check each assignment column for each fellow
-                fellows.forEach(fellow => {
-                    assignmentColumns.forEach(col => {
-                        if (columnIndices[col] !== undefined && row[columnIndices[col]] === fellow) {
-                            const isOnCall = isOnCallWeek(fellow, week);
+            scheduleData.forEach(row => {
+                // Only show row if it contains the selected fellow or if showing all
+                if (selectedFellow === 'all' || Object.values(row).includes(selectedFellow)) {
+                    const card = document.createElement('div');
+                    card.className = 'rotation-card';
+                    
+                    const weekHeader = document.createElement('h3');
+                    weekHeader.textContent = row['Week'];
+                    card.appendChild(weekHeader);
+                    
+                    rotations.forEach(rotation => {
+                        const value = row[rotation];
+                        if (value) {  // Only show non-empty rotations
+                            const item = document.createElement('div');
+                            item.className = 'rotation-item';
                             
-                            fellowSchedules[fellow].push({
-                                dateRange: currentDateRange,
-                                week: week,
-                                location: col,
-                                notes: notes,
-                                vacation: vacations.includes(fellow) ? 'Vacation' : '',
-                                onCall: isOnCall
-                            });
+                            const type = document.createElement('span');
+                            type.className = 'rotation-type';
+                            type.textContent = rotation;
+                            
+                            const fellowValue = document.createElement('span');
+                            fellowValue.className = 'rotation-value';
+                            if (selectedFellow !== 'all' && value === selectedFellow) {
+                                fellowValue.className += ' highlight-mobile';
+                            }
+                            fellowValue.textContent = value;
+                            
+                            item.appendChild(type);
+                            item.appendChild(fellowValue);
+                            card.appendChild(item);
                         }
                     });
-                });
+                    
+                    mobileView.appendChild(card);
+                }
             });
-
-            // Populate fellow selector
-            const select = document.getElementById('fellowSelect');
-            select.innerHTML = '<option value="">-- Select a Fellow --</option>';
-            fellows.forEach(fellow => {
-                const option = document.createElement('option');
-                option.value = fellow;
-                option.textContent = fellow;
-                select.appendChild(option);
-            });
-
-            document.getElementById('fellowSection').classList.remove('hidden');
+        }
+        
+        // Toggle between views
+        let currentView = 'table';
+        
+        function switchView(view) {
+            currentView = view;
+            const tableView = document.getElementById('tableView');
+            const mobileView = document.getElementById('mobileView');
+            const tableBtn = document.getElementById('tableViewBtn');
+            const cardBtn = document.getElementById('cardViewBtn');
             
-            let message = `Successfully parsed schedule! Found ${fellows.length} fellows.`;
-            if (Object.keys(callSchedule).length > 0) {
-                message += ` Call schedule loaded.`;
+            if (view === 'table') {
+                tableView.style.display = 'block';
+                mobileView.style.display = 'none';
+                tableBtn.classList.add('active');
+                cardBtn.classList.remove('active');
             } else {
-                message += ` No call schedule found - make sure your Excel file has a sheet with "call" in the name.`;
+                tableView.style.display = 'none';
+                mobileView.style.display = 'block';
+                tableBtn.classList.remove('active');
+                cardBtn.classList.add('active');
+                renderMobileView(document.getElementById('fellowSelect').value);
             }
-            alert(message);
         }
-
-        function displayFellowSchedule() {
-            const selectedFellow = document.getElementById('fellowSelect').value;
-            const displayDiv = document.getElementById('scheduleDisplay');
-            
-            if (!selectedFellow) {
-                displayDiv.innerHTML = '';
-                return;
+        
+        // Event listeners
+        document.getElementById('fellowSelect').addEventListener('change', function(e) {
+            renderTable(e.target.value);
+            if (currentView === 'card') {
+                renderMobileView(e.target.value);
             }
-
-            const schedule = fellowSchedules[selectedFellow];
-            
-            let html = `<h2 class="fellow-title">Schedule for Fellow: ${selectedFellow}</h2>`;
-            
-            // Add statistics
-            const stats = calculateStats(schedule);
-            html += `<div class="stats">
-                <strong>Total Assignments:</strong> ${stats.total}<br>
-                <strong>Locations:</strong> ${stats.locations.join(', ')}<br>
-                <strong>Vacation Weeks:</strong> ${stats.vacationWeeks}<br>
-                <strong>Call Weeks:</strong> ${stats.callWeeks}
-            </div>`;
-            
-            // Create table
-            html += `<table class="schedule-table">
-                <thead>
-                    <tr>
-                        <th>Date Range</th>
-                        <th>Week</th>
-                        <th>Location</th>
-                        <th>Notes</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-            
-            schedule.forEach(entry => {
-                const rowClass = entry.onCall ? 'on-call-week' : '';
-                html += `<tr class="${rowClass}">
-                    <td>${entry.dateRange}</td>
-                    <td>${entry.week}${entry.onCall ? '<span class="call-indicator">ON CALL</span>' : ''}</td>
-                    <td class="location-highlight">${entry.location}</td>
-                    <td>${entry.vacation ? '🏖️ ' + entry.vacation : ''}${entry.vacation && entry.notes ? ' | ' : ''}${entry.notes}</td>
-                </tr>`;
-            });
-            
-            html += `</tbody></table>`;
-            displayDiv.innerHTML = html;
+        });
+        
+        document.getElementById('tableViewBtn').addEventListener('click', function() {
+            switchView('table');
+        });
+        
+        document.getElementById('cardViewBtn').addEventListener('click', function() {
+            switchView('card');
+        });
+        
+        // Initial render
+        renderTable('all');
+        
+        // Check if mobile and show toggle buttons
+        if (window.innerWidth <= 768) {
+            document.getElementById('viewToggle').style.display = 'block';
         }
-
-        function calculateStats(schedule) {
-            const locations = [...new Set(schedule.map(s => s.location))];
-            const vacationWeeks = schedule.filter(s => s.vacation).length;
-            const callWeeks = schedule.filter(s => s.onCall).length;
-            return {
-                total: schedule.length,
-                locations: locations,
-                vacationWeeks: vacationWeeks,
-                callWeeks: callWeeks
-            };
-        }
-
-        function downloadCurrentSchedule() {
-            const selectedFellow = document.getElementById('fellowSelect').value;
-            if (!selectedFellow) {
-                alert('Please select a fellow first!');
-                return;
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('viewToggle').style.display = 'block';
+            } else {
+                document.getElementById('viewToggle').style.display = 'none';
+                switchView('table');
             }
-            
-            downloadScheduleAsExcel(selectedFellow);
-        }
-
-        function downloadAllSchedules() {
-            if (fellows.length === 0) {
-                alert('No schedules to download!');
-                return;
-            }
-            
-            const wb = XLSX.utils.book_new();
-            
-            fellows.forEach(fellow => {
-                const ws = createWorksheetForFellow(fellow);
-                XLSX.utils.book_append_sheet(wb, ws, fellow);
-            });
-            
-            XLSX.writeFile(wb, 'All_Fellow_Schedules.xlsx');
-        }
-
-        function downloadScheduleAsExcel(fellow) {
-            const wb = XLSX.utils.book_new();
-            const ws = createWorksheetForFellow(fellow);
-            XLSX.utils.book_append_sheet(wb, ws, fellow);
-            XLSX.writeFile(wb, `Schedule_${fellow}.xlsx`);
-        }
-
-        function createWorksheetForFellow(fellow) {
-            const schedule = fellowSchedules[fellow];
-            const wsData = [['Date Range', 'Week', 'Location', 'On Call', 'Notes']];
-            
-            schedule.forEach(entry => {
-                wsData.push([
-                    entry.dateRange,
-                    entry.week,
-                    entry.location,
-                    entry.onCall ? 'Yes' : '',
-                    (entry.vacation ? entry.vacation + ' | ' : '') + entry.notes
-                ]);
-            });
-            
-            return XLSX.utils.aoa_to_sheet(wsData);
-        }
+        });
     </script>
 </body>
 </html>
