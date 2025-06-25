@@ -224,8 +224,7 @@
     </div>
 
     <script>
-        // Demo data is shown initially to display the styling
-        // When CSV files are loaded, they will replace this demo data
+        // Schedule data will be loaded from weekly CSV files
         
         // Expected CSV format:
         // NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
@@ -312,7 +311,7 @@
 
         // Create table headers
         function createTableHeaders() {
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const headerHtml = `
                 <tr>
                     <th rowspan="2">NAME</th>
@@ -421,9 +420,8 @@
             const currentWeekIndex = getCurrentWeek(weeks);
             weekSelect.selectedIndex = currentWeekIndex;
             
-            // Show demo data for styling preview
-            showDemoData();
-            // Note: This demo data will be replaced when actual CSV files are loaded
+            // Load the schedule for the selected week
+            loadSchedule(weekSelect.value);
             
             // Handle week selection change
             weekSelect.addEventListener('change', (e) => {
@@ -431,40 +429,6 @@
             });
         }
 
-        // Show demo data for styling preview
-        function showDemoData() {
-            const tableHeader = document.getElementById('table-header');
-            const tableBody = document.getElementById('table-body');
-            
-            tableHeader.innerHTML = createTableHeaders();
-            
-            const demoData = [
-                { name: 'Sarah Johnson', pgy: '6', schedule: ['EOD1', 'CC/GK', 'EOD1', 'Research', 'EOD1', 'Research', 'EOD1', 'Research', 'EOD1', 'Research'] },
-                { name: 'Michael Chen', pgy: '6', schedule: ['Vacation', 'Vacation', 'Vacation', 'Vacation', 'Vacation', 'Vacation', 'Vacation', 'Vacation', 'Vacation', 'Vacation'] },
-                { name: 'Emily Rodriguez', pgy: '6', schedule: ['Research', 'Research', 'Vacation', 'Vacation', 'Research', 'Research', 'Research', 'Research', 'Research', 'Research'] },
-                { name: 'David Park', pgy: '5', schedule: ['Pvt Anes', 'Research', 'Pvt Anes', 'Research', 'Pvt Anes', 'CC/JB', 'Pvt Anes', 'Research', 'Pvt Anes', 'Research'] },
-                { name: 'Jessica Williams', pgy: '5', schedule: ['VA3', 'VA2', 'VA3', 'VA2', 'VA3', 'VA3', 'VA3', 'VA3', 'VA3', 'VA3'] },
-                { name: 'Robert Martinez', pgy: '5', schedule: ['VA2', 'VA1', 'VA2', 'CC/GK', 'VA2', 'VA2', 'VA2', 'VA2', 'VA2', 'VA2'] },
-                { name: 'Amanda Thompson', pgy: '4', schedule: ['UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1', 'UMHS-1'] },
-                { name: 'Christopher Lee', pgy: '4', schedule: ['VA1', 'CC/PC', 'VA1', 'VA1', 'Research', 'Research', 'VA1', 'VA1', 'VA1', 'VA1'] },
-                { name: 'Maria Garcia', pgy: '4', schedule: ['VA4', 'VA3', 'Amb/GH', 'CC/GK', 'VA4', 'Amb/JB', 'VA4', 'Amb/PC', 'VA4', 'VA4'] },
-                { name: 'Daniel Wilson', pgy: '4', schedule: ['UMHS-2', 'UMHS-2', 'Research', 'Research', 'UMHS-2', 'UMHS-2', 'UMHS-2', 'CC/PC', 'UMHS-2', 'UMHS-2'] }
-            ];
-            
-            const rowsHtml = demoData.map(fellow => {
-                const cells = [
-                    `<td>${fellow.name}</td>`,
-                    `<td>${fellow.pgy}</td>`,
-                    ...fellow.schedule.map((slot, index) => {
-                        const isDivider = index % 2 === 1 && index < fellow.schedule.length - 2;
-                        return `<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(slot)}</td>`;
-                    })
-                ];
-                return `<tr>${cells.join('')}</tr>`;
-            }).join('');
-            
-            tableBody.innerHTML = rowsHtml;
-        }
 
         // Run on page load
         document.addEventListener('DOMContentLoaded', init);
