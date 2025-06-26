@@ -15,192 +15,291 @@
             --mizzou-hover-gold: #FFF8E1;
         }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--mizzou-gray);
         }
         .mizzou-header {
             background-color: var(--mizzou-black);
             color: var(--mizzou-gold);
-            padding: 0.75rem;
-            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .mizzou-header h1,
+        .mizzou-header p {
+            color: var(--mizzou-gold);
+        }
+        .mizzou-footer {
+            background-color: var(--mizzou-black);
+            color: var(--mizzou-gold);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
             text-align: center;
         }
         .controls {
             background-color: #ffffff;
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
         }
         select {
-            padding: 0.375rem 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.25rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border-radius: 0.375rem;
             border: 1px solid #d1d5db;
-            width: 100%;
+            background-color: white;
+            cursor: pointer;
         }
         .table-container {
             background-color: white;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+            max-height: 75vh;
+            overflow-y: auto;
         }
         
-        /* Base table styles */
+        /* STANDARD VIEW STYLES */
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 1000px;
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+        th {
+            background-color: var(--mizzou-black);
+            color: var(--mizzou-gold);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
         }
         
-        /* Desktop styles */
-        @media (min-width: 769px) {
-            th, td {
+        /* Sticky first column for standard view */
+        thead th:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 12;
+            background-color: var(--mizzou-black);
+        }
+        tbody td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            background-color: white;
+            z-index: 5;
+            font-weight: 600;
+            min-width: 170px;
+        }
+        
+        /* Row styling */
+        tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
+        tr:nth-child(odd) { background-color: #ffffff; }
+        tr:hover { background-color: var(--mizzou-hover-gold); }
+        
+        /* Ensure sticky columns maintain row colors */
+        tr:nth-child(odd) td:nth-child(1) { background-color: #ffffff; }
+        tr:nth-child(even) td:nth-child(1) { background-color: var(--mizzou-gray-row); }
+        tr:hover td:nth-child(1) { background-color: var(--mizzou-hover-gold); }
+        
+        /* Time slot headers */
+        .day-header {
+            text-align: center;
+            font-weight: 700;
+            background-color: var(--mizzou-gold) !important;
+            color: var(--mizzou-black) !important;
+        }
+        .time-header {
+            text-align: center;
+            background-color: var(--mizzou-black);
+            color: var(--mizzou-gold);
+        }
+        .pgy-badge {
+            background-color: var(--mizzou-gold-dark);
+            color: var(--mizzou-black);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-left: 0.25rem;
+        }
+        /* Add vertical dividers between days */
+        .day-divider {
+            border-right: 2px solid #e5e7eb !important;
+        }
+        .am-pm-separator {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 0.125rem 0;
+        }
+        /* Cell content styling */
+        td {
+            text-align: center;
+        }
+        .vacation-cell {
+            color: #9ca3af;
+            font-style: italic;
+            font-weight: 400;
+        }
+        .research-cell {
+            color: #059669;
+            font-weight: 600;
+        }
+        .orientation-cell {
+            background-color: #fef9c3;
+            color: #92400e;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .holiday-cell {
+            background: linear-gradient(45deg, #e0e7ff 0%, #c7d2fe 100%);
+            color: #4c1d95;
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            position: relative;
+        }
+        .july4-cell {
+            background-color: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        /* COMPACT VIEW STYLES */
+        .table-container.compact-view table {
+            min-width: 420px;
+        }
+        .compact-view th,
+        .compact-view td {
+            font-size: 0.625rem;
+            padding: 0.125rem 0.25rem;
+            vertical-align: middle;
+        }
+        .compact-view thead th,
+        .compact-view tbody td {
+            position: static !important;
+            left: auto !important;
+        }
+        .compact-view tbody td:nth-child(1) {
+            min-width: 60px;
+            max-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .compact-view .orientation-cell,
+        .compact-view .holiday-cell,
+        .compact-view .july4-cell {
+            font-size: 0.625rem;
+            padding: 0.25rem;
+        }
+        
+        /* Compact view specific styles */
+        .compact-view .shift-cell {
+            text-align: center;
+            line-height: 1.1;
+            position: relative;
+        }
+        .compact-view .am-shift, 
+        .compact-view .pm-shift {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.0625rem 0.125rem;
+            font-size: 0.5rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            gap: 0.0625rem;
+        }
+        .compact-view .shift-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0.0625rem 0;
+            opacity: 0.5;
+        }
+        .compact-view .pgy {
+            font-size: 0.5rem;
+            color: #6b7280;
+            font-weight: normal;
+        }
+        .compact-view .day-header {
+            text-align: center;
+            font-size: 0.625rem;
+            padding: 0.25rem 0.125rem;
+        }
+        .compact-view .date-label {
+            font-size: 0.5rem;
+            font-weight: normal;
+            opacity: 0.8;
+        }
+        
+        /* Compact view activity colors */
+        .compact-view .umhs { color: #1e3a8a; }
+        .compact-view .va { color: #166534; }
+        .compact-view .clinic { color: #92400e; }
+        .compact-view .anes { color: #5b21b6; }
+        .compact-view .research { color: #0e7490; }
+        .compact-view .orientation { color: #ea580c; background-color: #fef3c7; padding: 0 0.125rem; border-radius: 0.125rem; }
+        .compact-view .holiday { font-size: 0.625rem; line-height: 1; }
+        
+        /* AM/PM indicators for compact view */
+        .compact-view .time-indicator {
+            font-size: 0.425rem;
+            opacity: 0.75;
+            margin-right: 0.0625rem;
+            font-weight: 400;
+            flex-shrink: 0;
+            line-height: 1;
+            vertical-align: middle;
+            display: inline-block;
+        }
+        .compact-view .am-indicator {
+            color: #f59e0b;
+            filter: brightness(1.1);
+        }
+        .compact-view .pm-indicator {
+            color: #6366f1;
+            filter: brightness(0.9);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            /* Standard view on mobile */
+            .controls {
                 padding: 0.5rem;
-                text-align: left;
-                border-bottom: 1px solid #e5e7eb;
-                font-size: 0.875rem;
             }
-            .pgy-badge {
-                background-color: var(--mizzou-gold-dark);
-                color: var(--mizzou-black);
-                padding: 0.125rem 0.375rem;
-                border-radius: 0.25rem;
-                font-size: 0.75rem;
-                margin-left: 0.5rem;
+            .controls > div {
+                margin-bottom: 1rem;
             }
-        }
-        
-        /* Mobile compact styles */
-        @media (max-width: 450px) {
-            .mizzou-header h1 { font-size: 1.25rem; }
-            .mizzou-header p { font-size: 0.75rem; }
-            
-            table {
-                min-width: 420px; /* Accommodates full rotation names except Ori/🎆 */
-            }
-            
             th, td {
-                padding: 0.125rem 0.25rem;
+                padding: 0.25rem;
                 font-size: 0.625rem;
-                border-bottom: 1px solid #e5e7eb;
-                vertical-align: middle;
             }
-            
-            /* Sticky header and first column */
-            thead th {
-                position: sticky;
-                top: 0;
-                background-color: var(--mizzou-black);
-                color: var(--mizzou-gold);
-                z-index: 10;
-                font-weight: 600;
+            tbody td:nth-child(1) {
+                min-width: 100px;
             }
-            
-            tbody td:first-child,
-            thead th:first-child {
-                position: sticky;
-                left: 0;
-                background-color: white;
-                z-index: 5;
-                font-weight: 600;
-                white-space: nowrap;
-                max-width: 60px;
-                overflow: hidden;
-                text-overflow: ellipsis;
+            table {
+                min-width: 700px;
             }
-            
-            thead th:first-child {
-                background-color: var(--mizzou-black);
-                z-index: 11;
-            }
-            
-            /* Ultra compact cells */
-            .shift-cell {
-                text-align: center;
-                line-height: 1.1;
-                position: relative;
-            }
-
-            .am-shift, .pm-shift {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 0.0625rem 0.125rem;
-                font-size: 0.5rem;
-                font-weight: 500;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                gap: 0.0625rem;
-            }
-
-            /* AM/PM indicators */
-            .time-indicator {
-                font-size: 0.425rem;
-                opacity: 0.75;
-                margin-right: 0.0625rem;
-                font-weight: 400;
-                flex-shrink: 0;
-                line-height: 1;
-                vertical-align: middle;
-                display: inline-block;
-            }
-
-            .am-indicator {
-                color: #f59e0b; /* Amber/gold for sun */
-                filter: brightness(1.1);
-            }
-
-            .pm-indicator {
-                color: #6366f1; /* Indigo/blue for moon */
-                filter: brightness(0.9);
-            }
-            
-            .shift-divider {
-                height: 1px;
-                background: #e5e7eb;
-                margin: 0.0625rem 0;
-                opacity: 0.5;
-            }
-            
-            /* PGY indicator - inline and tiny */
-            .pgy {
-                font-size: 0.5rem;
-                color: #6b7280;
-                font-weight: normal;
-            }
-            
-            /* Day headers */
-            .day-header {
-                text-align: center;
+            .orientation-cell,
+            .holiday-cell,
+            .july4-cell {
                 font-size: 0.625rem;
-                padding: 0.25rem 0.125rem;
+                padding: 0.25rem;
             }
-            
-            .date-label {
-                font-size: 0.5rem;
-                font-weight: normal;
-                opacity: 0.8;
-            }
-            
-            /* Day columns minimum width */
-            td:not(:first-child) {
-                min-width: 60px;
-            }
-            
-            /* Color coding for different activities */
-            .umhs { color: #1e3a8a; }
-            .va { color: #166534; }
-            .clinic { color: #92400e; }
-            .anes { color: #5b21b6; }
-            .research { color: #0e7490; }
-            .orientation { color: #ea580c; background-color: #fef3c7; padding: 0 0.125rem; border-radius: 0.125rem; }
-            .holiday { font-size: 0.75rem; line-height: 1; }
-            
-            /* Row stripes */
-            tbody tr:nth-child(odd) { background-color: #ffffff; }
-            tbody tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
-            tbody tr:nth-child(odd) td:first-child { background-color: #ffffff; }
-            tbody tr:nth-child(even) td:first-child { background-color: var(--mizzou-gray-row); }
         }
         
         /* Loading states */
@@ -210,9 +309,6 @@
             color: #6b7280;
         }
         .hidden {
-            display: none;
-        }
-        
         /* Navigation buttons */
         .nav-buttons {
             display: flex;
@@ -230,61 +326,91 @@
         .nav-btn:active {
             background: #d1d5db;
         }
+            display: none;
+        }
     </style>
 </head>
-<body class="p-2 md:p-8">
-    <div class="container mx-auto max-w-6xl">
+<body class="p-4 md:p-8">
+    <div class="container mx-auto">
         <header class="mizzou-header">
-            <h1 class="text-xl md:text-3xl font-bold">Weekly Schedule</h1>
-            <p class="text-xs md:text-base">Mizzou Gastroenterology</p>
+            <img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-24 h-24 mx-auto mb-2">
+            <h1 class="text-3xl sm:text-4xl font-bold">Weekly Schedule</h1>
+            <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
         </header>
 
         <div class="controls">
-            <select id="week-select" class="w-full md:w-auto">
-                <!-- Options populated by JavaScript -->
-            </select>
-            <div class="nav-buttons">
-                <button id="prev-week" class="nav-btn">← Prev</button>
-                <button id="next-week" class="nav-btn">Next →</button>
+            <div>
+                <label for="week-select" class="block text-lg font-medium text-gray-700 mb-2">Select Week</label>
+                <select id="week-select" class="w-full sm:w-auto">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
             </div>
-        </div>
+            <div class="mt-4 sm:mt-0">
+                <label for="view-select" class="block text-lg font-medium text-gray-700 mb-2">View Mode</label>
+                <select id="view-select" class="w-full sm:w-auto">
+                    <option value="standard">Standard</option>
+                    <option value="compact">Compact</option>
+                </select>
+            </div>
 
+        <div class="nav-buttons">
+            <button id="prev-week" class="nav-btn">← Prev</button>
+            <button id="next-week" class="nav-btn">Next →</button>
+        </div>
         <div id="schedule-container" class="table-container">
             <div id="loading-message" class="loading hidden">Loading schedule...</div>
-            <div id="no-data-message" class="no-data hidden">No schedule data available for this week.</div>
+            <div id="no-data-message" class="no-data hidden">
+                No schedule data available for this week.
+            </div>
             <table id="schedule-table">
                 <thead id="table-header">
-                    <!-- Headers populated by JavaScript -->
+                    <!-- Headers will be populated by JavaScript -->
                 </thead>
                 <tbody id="table-body">
-                    <!-- Data populated by JavaScript -->
+                    <!-- Data will be populated by JavaScript -->
                 </tbody>
             </table>
         </div>
+
+        <footer class="mizzou-footer">
+            <p>&copy; 2025 University of Missouri Gastroenterology Division</p>
+        </footer>
     </div>
 
     <script>
-        // Only abbreviations used:
-        // - Orientation → Ori
-        // - Holiday (any) → 🎆
-        // All other rotation names remain in full
-
-        // Sun and moon indicators for AM/PM
+        // Track current week and view mode
+        let currentWeekFile = '';
+        let currentView = 'standard';
+        
+        // Sample data for week_6_30_25.csv
+        const sampleData = {
+            'week_6_30_25.csv': `NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
+Tarar,6,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,VA1,UMHS-2,UMHS-2,Holiday (4th of July),Holiday (4th of July)
+Mansour,6,EOD1,CC/JB,Priv Anes,Priv Anes,EOD1,Research,Priv Anes,Priv Anes,Holiday (4th of July),Holiday (4th of July)
+Deda,6,VA2,CC/VA2,VA2,VA2,VA2,VA2,VA2,VA2,Holiday (4th of July),Holiday (4th of July)
+Fard,5,VA1,VA1,VA1,VA1,VA1,CC/PC,VA1,VA1,Holiday (4th of July),Holiday (4th of July)
+Gandhi,5,UMHS-1,CC/VA3,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,Holiday (4th of July),Holiday (4th of July)
+Islam,5,VA3,Amb/JB,Research,Research,Amb/PC,CC/PC,Research,Research,Holiday (4th of July),Holiday (4th of July)
+Ali,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Merchant,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Zaher,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)`
+        };
+        
+        // Sun and moon indicators for compact view
         const AM_INDICATOR = '☀';
         const PM_INDICATOR = '☽';
         
-        // Special formatting for holidays and orientation only
+        // Special formatting for holidays and orientation in compact view
         function formatSpecialContent(text) {
             if (!text) return text;
             const lower = text.toLowerCase();
-            // Use emoji only for any holiday
             if (lower.includes('holiday')) return '🎆';
-            // Abbreviate orientation
             if (lower === 'orientation') return 'Ori';
             return text;
         }
-
-        // Get CSS class for activity type
+        
+        // Get CSS class for activity type (compact view)
         function getActivityClass(content) {
             if (!content) return '';
             const lower = content.toLowerCase();
@@ -299,9 +425,7 @@
             if (lower.includes('vacation')) return 'vacation';
             return '';
         }
-
-        let currentWeekFile = '';
-
+        
         // Generate weeks
         function generateWeeks() {
             const weeks = [];
@@ -390,96 +514,119 @@
             return { headers, data };
         }
 
-        // Create table headers
-        function createTableHeaders(startDate) {
-            const isMobile = window.innerWidth <= 650;
-            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-            
+        // Create table headers for standard view
+        function createStandardHeaders(startDate, mobile = false) {
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
             const dates = days.map((_, idx) => {
                 const d = new Date(startDate);
                 d.setDate(d.getDate() + idx);
                 return `${d.getMonth() + 1}/${d.getDate()}`;
             });
 
-            const headerHtml = `
+            if (mobile) {
+                return `
+                    <tr>
+                        <th>NAME</th>
+                        ${days.map((day, i) => `<th class="day-header">${day}<br>${dates[i]}</th>`).join('')}
+                    </tr>
+                `;
+            }
+
+            return `
+                <tr>
+                    <th rowspan="2">NAME</th>
+                    ${days.map((day, i) => `<th colspan="2" class="day-header">${day}<br>${dates[i]}</th>`).join('')}
+                </tr>
+                <tr>
+                    ${days.map((day, index) => {
+                        const isDivider = index < days.length - 1;
+                        return `<th class="time-header">AM</th><th class="time-header${isDivider ? ' day-divider' : ''}">PM</th>`;
+                    }).join('')}
+                </tr>
+            `;
+        }
+
+        // Create table headers for compact view
+        function createCompactHeaders(startDate) {
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+            const dates = days.map((_, idx) => {
+                const d = new Date(startDate);
+                d.setDate(d.getDate() + idx);
+                return `${d.getMonth() + 1}/${d.getDate()}`;
+            });
+
+            return `
                 <tr>
                     <th>Name</th>
                     ${days.map((day, i) => `
                         <th class="day-header">
-                            ${day}
-                            ${isMobile ? `<br><span class="date-label">${dates[i]}</span>` : ` ${dates[i]}`}
+                            ${day}<br><span class="date-label">${dates[i]}</span>
                         </th>
                     `).join('')}
                 </tr>
             `;
-            return headerHtml;
         }
 
-        // Style cell content
-        function styleCellContent(amContent, pmContent) {
+        // Style cell content for standard view
+        function styleStandardContent(content) {
+            if (!content || content === '-' || content === '') return '-';
+            const lowerContent = content.toLowerCase();
+
+            if (lowerContent === 'orientation') {
+                return `<span class="orientation-cell">Orientation</span>`;
+            }
+            if (lowerContent.includes('holiday')) {
+                if (lowerContent.includes('4th of july') && currentWeekFile === 'week_6_30_25.csv') {
+                    return `<span class="july4-cell">4th of July</span>`;
+                }
+                return `<span class="holiday-cell">${content}</span>`;
+            }
+            if (lowerContent === 'vacation') {
+                return `<span class="vacation-cell">${content}</span>`;
+            }
+            if (lowerContent === 'research') {
+                return `<span class="research-cell">${content}</span>`;
+            }
+            return content;
+        }
+
+        // Style cell content for compact view
+        function styleCompactContent(amContent, pmContent) {
             const amClass = getActivityClass(amContent);
             const pmClass = getActivityClass(pmContent);
             const amText = formatSpecialContent(amContent) || '-';
             const pmText = formatSpecialContent(pmContent) || '-';
-
-            const isMobile = window.innerWidth <= 650;
-
-            if (isMobile) {
-                // Special case: if both AM and PM are the same holiday emoji, show it centered
-                if (amText === '🎆' && pmText === '🎆') {
-                    return `
-                        <div class="shift-cell">
-                            <div class="holiday" style="text-align: center; padding: 0.125rem 0; font-size: 0.625rem;">
-                                🎆
-                            </div>
-                        </div>
-                    `;
-                }
-
+            
+            // Special case: if both AM and PM are the same holiday emoji, show it centered
+            if (amText === '🎆' && pmText === '🎆') {
                 return `
                     <div class="shift-cell">
-                        <div class="am-shift ${amClass}">
-                            <span class="time-indicator am-indicator">${AM_INDICATOR}</span>
-                            ${amText}
-                        </div>
-                        <div class="shift-divider"></div>
-                        <div class="pm-shift ${pmClass}">
-                            <span class="time-indicator pm-indicator">${PM_INDICATOR}</span>
-                            ${pmText}
+                        <div class="holiday" style="text-align: center; padding: 0.125rem 0; font-size: 0.625rem;">
+                            🎆
                         </div>
                     </div>
                 `;
             }
-
-            // Normal desktop view without AM/PM icons
+            
             return `
                 <div class="shift-cell">
-                    <div class="am-shift ${amClass}">${amText}</div>
+                    <div class="am-shift ${amClass}">
+                        <span class="time-indicator am-indicator">${AM_INDICATOR}</span>
+                        ${amText}
+                    </div>
                     <div class="shift-divider"></div>
-                    <div class="pm-shift ${pmClass}">${pmText}</div>
+                    <div class="pm-shift ${pmClass}">
+                        <span class="time-indicator pm-indicator">${PM_INDICATOR}</span>
+                        ${pmText}
+                    </div>
                 </div>
             `;
         }
 
-        // Sample data for week_6_30_25.csv
-        const sampleData = {
-            'week_6_30_25.csv': `NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
-Tarar,6,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,VA1,UMHS-2,UMHS-2,Holiday (4th of July),Holiday (4th of July)
-Mansour,6,EOD1,CC/JB,Priv Anes,Priv Anes,EOD1,Research,Priv Anes,Priv Anes,Holiday (4th of July),Holiday (4th of July)
-Deda,6,VA2,CC/VA2,VA2,VA2,VA2,VA2,VA2,VA2,Holiday (4th of July),Holiday (4th of July)
-Fard,5,VA1,VA1,VA1,VA1,VA1,CC/PC,VA1,VA1,Holiday (4th of July),Holiday (4th of July)
-Gandhi,5,UMHS-1,CC/VA3,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,Holiday (4th of July),Holiday (4th of July)
-Islam,5,VA3,Amb/JB,Research,Research,Amb/PC,CC/PC,Research,Research,Holiday (4th of July),Holiday (4th of July)
-Ali,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
-Merchant,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
-Zaher,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
-Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)`
-        };
-
-        // Load schedule
+        // Load and display schedule
         async function loadSchedule(weekFile, startDate) {
             currentWeekFile = weekFile;
-            const isMobile = window.innerWidth <= 650;
+            const mobile = window.matchMedia('(max-width: 768px)').matches;
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
             const table = document.getElementById('schedule-table');
@@ -492,8 +639,6 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
             
             try {
                 let csvText;
-                
-                // Use sample data if available, otherwise try to fetch
                 if (sampleData[weekFile]) {
                     csvText = sampleData[weekFile];
                 } else {
@@ -503,37 +648,63 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
                 }
                 
                 const parsedData = parseCSV(csvText);
-                
                 if (!parsedData || parsedData.data.length === 0) {
                     throw new Error('No data');
                 }
                 
-                tableHeader.innerHTML = createTableHeaders(startDate);
-
-                // Create rows
-                const rowsHtml = parsedData.data.map(row => {
-                    const name = row.NAME || '';
-                    const pgy = row.PGY || '';
-                    const nameCell = isMobile 
-                        ? `<td>${name}<span class="pgy">${pgy ? `-${pgy}` : ''}</span></td>`
-                        : `<td>${name}<span class="pgy-badge">PGY-${pgy}</span></td>`;
+                // Create headers based on view mode
+                if (currentView === 'compact') {
+                    tableHeader.innerHTML = createCompactHeaders(startDate);
                     
-                    const cells = [nameCell];
-                    
-                    // Add day cells
-                    for (let d = 0; d < 5; d++) {
-                        const amKey = d === 0 ? 'AM' : `AM${d + 1}`;
-                        const pmKey = d === 0 ? 'PM' : `PM${d + 1}`;
-                        const amContent = row[amKey] || '';
-                        const pmContent = row[pmKey] || '';
+                    // Create compact rows
+                    const rowsHtml = parsedData.data.map(row => {
+                        const name = row.NAME || '';
+                        const pgy = row.PGY || '';
+                        const nameCell = `<td>${name}<span class="pgy">${pgy ? `-${pgy}` : ''}</span></td>`;
+                        const cells = [nameCell];
                         
-                        cells.push(`<td>${styleCellContent(amContent, pmContent)}</td>`);
-                    }
+                        // Add day cells with combined AM/PM
+                        for (let d = 0; d < 5; d++) {
+                            const amKey = d === 0 ? 'AM' : `AM${d + 1}`;
+                            const pmKey = d === 0 ? 'PM' : `PM${d + 1}`;
+                            const amContent = row[amKey] || '';
+                            const pmContent = row[pmKey] || '';
+                            cells.push(`<td>${styleCompactContent(amContent, pmContent)}</td>`);
+                        }
+                        
+                        return `<tr>${cells.join('')}</tr>`;
+                    }).join('');
                     
-                    return `<tr>${cells.join('')}</tr>`;
-                }).join('');
+                    tableBody.innerHTML = rowsHtml;
+                } else {
+                    // Standard view
+                    tableHeader.innerHTML = createStandardHeaders(startDate, mobile);
+                    
+                    // Create standard rows
+                    const rowsHtml = parsedData.data.map(row => {
+                        const nameCell = `<td class="text-left">${row.NAME || ''}<span class="pgy-badge">PGY-${row.PGY || ''}</span></td>`;
+                        const cells = [nameCell];
+                        if (mobile) {
+                            for (let d = 0; d < 5; d++) {
+                                const am = row[d === 0 ? 'AM' : `AM${d + 1}`] || '';
+                                const pm = row[d === 0 ? 'PM' : `PM${d + 1}`] || '';
+                                const isDivider = d < 4;
+                                cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleStandardContent(am)}<hr class="am-pm-separator">${styleStandardContent(pm)}</td>`);
+                            }
+                        } else {
+                            for (let i = 2; i < parsedData.headers.length; i++) {
+                                const content = row[parsedData.headers[i]] || '';
+                                const cellIndex = i - 2;
+                                const isDivider = cellIndex % 2 === 1 && cellIndex < parsedData.headers.length - 4;
+                                cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleStandardContent(content)}</td>`);
+                            }
+                        }
+                        return `<tr>${cells.join('')}</tr>`;
+                    }).join('');
+                    
+                    tableBody.innerHTML = rowsHtml;
+                }
                 
-                tableBody.innerHTML = rowsHtml;
                 loadingMsg.classList.add('hidden');
                 table.style.display = 'table';
                 
@@ -544,11 +715,31 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
             }
         }
 
+        // Update view mode
+        function updateView() {
+            const container = document.getElementById('schedule-container');
+            const view = document.getElementById('view-select').value;
+            currentView = view;
+            
+            if (view === 'compact') {
+                container.classList.add('compact-view');
+            } else {
+                container.classList.remove('compact-view');
+            }
+            
+            // Reload schedule with new view
+            const weekSelect = document.getElementById('week-select');
+            const weeks = generateWeeks();
+            const currentIndex = weekSelect.selectedIndex;
+            loadSchedule(weekSelect.value, weeks[currentIndex].startDate);
+        }
+
         // Initialize
         function init() {
             const weekSelect = document.getElementById('week-select');
-            const prevBtn = document.getElementById('prev-week');
-            const nextBtn = document.getElementById('next-week');
+            const prevBtn = document.getElementById("prev-week");
+            const nextBtn = document.getElementById("next-week");
+            const viewSelect = document.getElementById('view-select');
             const weeks = generateWeeks();
             
             weeks.forEach((week, index) => {
@@ -561,33 +752,30 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
             
             let currentWeekIndex = getCurrentWeek(weeks);
             weekSelect.selectedIndex = currentWeekIndex;
+            viewSelect.value = 'standard';
             
             loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
-            
-            weekSelect.addEventListener('change', (e) => {
+            weekSelect.addEventListener("change", (e) => {
                 currentWeekIndex = e.target.selectedIndex;
                 loadSchedule(e.target.value, weeks[currentWeekIndex].startDate);
             });
-
-            prevBtn.addEventListener('click', () => {
+            viewSelect.addEventListener("change", updateView);
+            prevBtn.addEventListener("click", () => {
                 if (currentWeekIndex > 0) {
                     currentWeekIndex -= 1;
                     weekSelect.selectedIndex = currentWeekIndex;
-                    weekSelect.dispatchEvent(new Event('change'));
+                    weekSelect.dispatchEvent(new Event("change"));
                 }
             });
-
-            nextBtn.addEventListener('click', () => {
+            nextBtn.addEventListener("click", () => {
                 if (currentWeekIndex < weeks.length - 1) {
                     currentWeekIndex += 1;
                     weekSelect.selectedIndex = currentWeekIndex;
-                    weekSelect.dispatchEvent(new Event('change'));
+                    weekSelect.dispatchEvent(new Event("change"));
                 }
             });
-            
-            // Reload on window resize to adjust for mobile/desktop
             let resizeTimer;
-            window.addEventListener('resize', () => {
+            window.addEventListener("resize", () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
                     loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
