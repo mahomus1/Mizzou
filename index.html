@@ -422,28 +422,41 @@
             const amText = formatSpecialContent(amContent) || '-';
             const pmText = formatSpecialContent(pmContent) || '-';
 
-            // Special case: if both AM and PM are the same holiday emoji, show it centered
-            if (amText === '🎆' && pmText === '🎆') {
+            const isMobile = window.innerWidth <= 650;
+
+            if (isMobile) {
+                // Special case: if both AM and PM are the same holiday emoji, show it centered
+                if (amText === '🎆' && pmText === '🎆') {
+                    return `
+                        <div class="shift-cell">
+                            <div class="holiday" style="text-align: center; padding: 0.125rem 0; font-size: 0.625rem;">
+                                🎆
+                            </div>
+                        </div>
+                    `;
+                }
+
                 return `
                     <div class="shift-cell">
-                        <div class="holiday" style="text-align: center; padding: 0.125rem 0; font-size: 0.625rem;">
-                            🎆
+                        <div class="am-shift ${amClass}">
+                            <span class="time-indicator am-indicator">${AM_INDICATOR}</span>
+                            ${amText}
+                        </div>
+                        <div class="shift-divider"></div>
+                        <div class="pm-shift ${pmClass}">
+                            <span class="time-indicator pm-indicator">${PM_INDICATOR}</span>
+                            ${pmText}
                         </div>
                     </div>
                 `;
             }
 
+            // Normal desktop view without AM/PM icons
             return `
                 <div class="shift-cell">
-                    <div class="am-shift ${amClass}">
-                        <span class="time-indicator am-indicator">${AM_INDICATOR}</span>
-                        ${amText}
-                    </div>
+                    <div class="am-shift ${amClass}">${amText}</div>
                     <div class="shift-divider"></div>
-                    <div class="pm-shift ${pmClass}">
-                        <span class="time-indicator pm-indicator">${PM_INDICATOR}</span>
-                        ${pmText}
-                    </div>
+                    <div class="pm-shift ${pmClass}">${pmText}</div>
                 </div>
             `;
         }
