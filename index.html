@@ -15,224 +15,170 @@
             --mizzou-hover-gold: #FFF8E1;
         }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--mizzou-gray);
         }
         .mizzou-header {
             background-color: var(--mizzou-black);
             color: var(--mizzou-gold);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-        .mizzou-header h1,
-        .mizzou-header p {
-            color: var(--mizzou-gold);
-        }
-        .mizzou-footer {
-            background-color: var(--mizzou-black);
-            color: var(--mizzou-gold);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-top: 2rem;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             text-align: center;
         }
         .controls {
             background-color: #ffffff;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
         select {
-            padding: 0.5rem 0.75rem;
-            font-size: 1rem;
-            border-radius: 0.375rem;
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
             border: 1px solid #d1d5db;
-            background-color: white;
-            cursor: pointer;
+            width: 100%;
         }
         .table-container {
             background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow-x: auto;
-            max-height: 75vh;
-            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
+        
+        /* Base table styles */
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 750px;
         }
-        th, td {
-            padding: 0.25rem 0.5rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 0.875rem;
-        }
-        th {
-            background-color: var(--mizzou-black);
-            color: var(--mizzou-gold);
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            white-space: nowrap;
-        }
-        /* Sticky first column (NAME) */
-        thead th:nth-child(1) {
-            position: sticky;
-            left: 0;
-            z-index: 12;
-            background-color: var(--mizzou-black);
-        }
-        tbody td:nth-child(1) {
-            position: sticky;
-            left: 0;
-            background-color: white;
-            z-index: 5;
-            font-weight: 600;
-            min-width: 120px;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        /* Row styling */
-        tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
-        tr:nth-child(odd) { background-color: #ffffff; }
-        tr:hover { background-color: var(--mizzou-hover-gold); }
         
-        /* Ensure sticky columns maintain row colors */
-        tr:nth-child(odd) td:nth-child(1) { background-color: #ffffff; }
-        tr:nth-child(even) td:nth-child(1) { background-color: var(--mizzou-gray-row); }
-        tr:hover td:nth-child(1) { background-color: var(--mizzou-hover-gold); }
-        
-        /* Time slot headers */
-        .day-header {
-            text-align: center;
-            font-weight: 700;
-            background-color: var(--mizzou-gold) !important;
-            color: var(--mizzou-black) !important;
-        }
-        .time-header {
-            text-align: center;
-            background-color: var(--mizzou-black);
-            color: var(--mizzou-gold);
-        }
-        .pgy-badge {
-            background-color: var(--mizzou-gold-dark);
-            color: var(--mizzou-black);
-            padding: 0.125rem 0.25rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            margin-left: 0.25rem;
-        }
-        /* Add vertical dividers between days */
-        .day-divider {
-            border-right: 2px solid #e5e7eb !important;
-        }
-        .am-pm-separator {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 0.125rem 0;
-        }
-        .slot-indicator {
-            font-weight: 600;
-            font-size: 0.6rem;
-            color: var(--mizzou-black);
-        }
-        /* Cell content styling */
-        td {
-            text-align: center;
-        }
-        .vacation-cell {
-            color: #9ca3af;
-            font-style: italic;
-            font-weight: 400;
-        }
-        .research-cell {
-            color: #059669;
-            font-weight: 600;
-        }
-
-        /* Orientation cell styling */
-        .orientation-cell {
-            background-color: #fef9c3;
-            color: #92400e;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-
-        /* General holiday cell styling */
-        .holiday-cell {
-            background: linear-gradient(45deg, #e0e7ff 0%, #c7d2fe 100%);
-            color: #4c1d95;
-            font-weight: 600;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            position: relative;
-        }
-
-        /* 4th of July specific styling */
-        .july4-cell {
-            background-color: #eff6ff;
-            color: #1e3a8a;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-        }
-        .no-data {
-            text-align: center;
-            padding: 3rem;
-            color: #6b7280;
-            font-size: 1.125rem;
-        }
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
+        /* Desktop styles */
+        @media (min-width: 769px) {
             th, td {
-                padding: 0.0625rem;
-                font-size: 0.625rem;
-            }
-            .controls {
                 padding: 0.5rem;
+                text-align: left;
+                border-bottom: 1px solid #e5e7eb;
+                font-size: 0.875rem;
             }
-            tbody td:nth-child(1) {
-                min-width: 40px;
-                max-width: 40px;
+            .pgy-badge {
+                background-color: var(--mizzou-gold-dark);
+                color: var(--mizzou-black);
+                padding: 0.125rem 0.375rem;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                margin-left: 0.5rem;
+            }
+        }
+        
+        /* Mobile compact styles */
+        @media (max-width: 768px) {
+            .mizzou-header h1 { font-size: 1.25rem; }
+            .mizzou-header p { font-size: 0.75rem; }
+            
+            table {
+                min-width: 420px; /* Accommodates full rotation names except Ori/🎆 */
+            }
+            
+            th, td {
+                padding: 0.125rem 0.25rem;
+                font-size: 0.625rem;
+                border-bottom: 1px solid #e5e7eb;
+                vertical-align: middle;
+            }
+            
+            /* Sticky header and first column */
+            thead th {
+                position: sticky;
+                top: 0;
+                background-color: var(--mizzou-black);
+                color: var(--mizzou-gold);
+                z-index: 10;
+                font-weight: 600;
+            }
+            
+            tbody td:first-child,
+            thead th:first-child {
+                position: sticky;
+                left: 0;
+                background-color: white;
+                z-index: 5;
+                font-weight: 600;
+                white-space: nowrap;
+                max-width: 60px;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            thead th:nth-child(1) {
-                min-width: 40px;
+            
+            thead th:first-child {
+                background-color: var(--mizzou-black);
+                z-index: 11;
             }
-            table {
-                min-width: 600px;
+            
+            /* Ultra compact cells */
+            .shift-cell {
+                text-align: center;
+                line-height: 1.1;
             }
-            .pgy-badge {
+            
+            .am-shift, .pm-shift {
+                display: block;
+                padding: 0.0625rem;
                 font-size: 0.5rem;
-                padding: 0.0625rem 0.125rem;
-                margin-left: 0.125rem;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
-            .slot-indicator {
-                font-size: 0.45rem;
+            
+            .shift-divider {
+                height: 1px;
+                background: #e5e7eb;
+                margin: 0.0625rem 0;
+                opacity: 0.5;
             }
-            .orientation-cell,
-            .holiday-cell,
-            .july4-cell {
+            
+            /* PGY indicator - inline and tiny */
+            .pgy {
+                font-size: 0.5rem;
+                color: #6b7280;
+                font-weight: normal;
+            }
+            
+            /* Day headers */
+            .day-header {
+                text-align: center;
                 font-size: 0.625rem;
-                padding: 0.25rem;
+                padding: 0.25rem 0.125rem;
             }
-        }
-        @media (max-width: 480px) {
-            .pgy-badge {
-                display: none;
+            
+            .date-label {
+                font-size: 0.5rem;
+                font-weight: normal;
+                opacity: 0.8;
             }
+            
+            /* Day columns minimum width */
+            td:not(:first-child) {
+                min-width: 60px;
+            }
+            
+            /* Color coding for different activities */
+            .umhs { color: #1e3a8a; }
+            .va { color: #166534; }
+            .clinic { color: #92400e; }
+            .anes { color: #5b21b6; }
+            .research { color: #0e7490; }
+            .orientation { color: #ea580c; background-color: #fef3c7; padding: 0 0.125rem; border-radius: 0.125rem; }
+            .holiday { font-size: 0.75rem; line-height: 1; }
+            
+            /* Row stripes */
+            tbody tr:nth-child(odd) { background-color: #ffffff; }
+            tbody tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
+            tbody tr:nth-child(odd) td:first-child { background-color: #ffffff; }
+            tbody tr:nth-child(even) td:first-child { background-color: var(--mizzou-gray-row); }
         }
-        /* Loading spinner */
-        .loading {
+        
+        /* Loading states */
+        .loading, .no-data {
             text-align: center;
             padding: 2rem;
             color: #6b7280;
@@ -240,73 +186,101 @@
         .hidden {
             display: none;
         }
+        
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.375rem 0.75rem;
+            background: #e5e7eb;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .nav-btn:active {
+            background: #d1d5db;
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="container mx-auto">
+<body class="p-2 md:p-8">
+    <div class="container mx-auto max-w-6xl">
         <header class="mizzou-header">
-            <img src="https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/svg/E313.svg" alt="GI Logo" class="w-24 h-24 mx-auto mb-2">
-            <h1 class="text-3xl sm:text-4xl font-bold">Weekly Schedule</h1>
-            <p>Mizzou Division of Gastroenterology &amp; Hepatology</p>
+            <h1 class="text-xl md:text-3xl font-bold">Weekly Schedule</h1>
+            <p class="text-xs md:text-base">Mizzou Gastroenterology</p>
         </header>
 
         <div class="controls">
-            <div class="flex flex-col sm:flex-row sm:items-end sm:space-x-4">
-                <div>
-                    <label for="week-select" class="block text-lg font-medium text-gray-700 mb-2">Select Week</label>
-                    <select id="week-select" class="w-full sm:w-auto">
-                        <!-- Options will be populated by JavaScript -->
-                    </select>
-                </div>
-                <div class="mt-4 sm:mt-0 flex space-x-2">
-                    <button id="prev-week" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Prev</button>
-                    <button id="next-week" class="px-3 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Next</button>
-                </div>
+            <select id="week-select" class="w-full md:w-auto">
+                <!-- Options populated by JavaScript -->
+            </select>
+            <div class="nav-buttons">
+                <button id="prev-week" class="nav-btn">← Prev</button>
+                <button id="next-week" class="nav-btn">Next →</button>
             </div>
         </div>
 
         <div id="schedule-container" class="table-container">
             <div id="loading-message" class="loading hidden">Loading schedule...</div>
-            <div id="no-data-message" class="no-data hidden">
-                No schedule data available for this week.
-            </div>
+            <div id="no-data-message" class="no-data hidden">No schedule data available for this week.</div>
             <table id="schedule-table">
                 <thead id="table-header">
-                    <!-- Headers will be populated by JavaScript -->
+                    <!-- Headers populated by JavaScript -->
                 </thead>
                 <tbody id="table-body">
-                    <!-- Data will be populated by JavaScript -->
+                    <!-- Data populated by JavaScript -->
                 </tbody>
             </table>
         </div>
-
-        <footer class="mizzou-footer">
-            <p>&copy; 2025 University of Missouri Gastroenterology Division</p>
-        </footer>
     </div>
 
     <script>
-        // Schedule data will be loaded from weekly CSV files
+        // Only abbreviations used:
+        // - Orientation → Ori
+        // - Holiday (any) → 🎆
+        // All other rotation names remain in full
         
-        // Expected CSV format:
-        // NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
-        // (NAME, PGY, then Mon AM/PM, Tue AM/PM, Wed AM/PM, Thu AM/PM, Fri AM/PM)
-        
-        // File naming: week_M_D_YY.csv (e.g., week_6_30_25.csv)
+        // Special formatting for holidays and orientation only
+        function formatSpecialContent(text) {
+            if (!text) return text;
+            const lower = text.toLowerCase();
+            // Use emoji only for any holiday
+            if (lower.includes('holiday')) return '🎆';
+            // Abbreviate orientation
+            if (lower === 'orientation') return 'Ori';
+            return text;
+        }
 
-        // Track current week for special holiday styling
+        // Get CSS class for activity type
+        function getActivityClass(content) {
+            if (!content) return '';
+            const lower = content.toLowerCase();
+            if (lower.includes('umhs')) return 'umhs';
+            if (lower.includes('va')) return 'va';
+            if (lower.includes('eod')) return 'clinic';
+            if (lower.includes('cc/') || lower.includes('amb/')) return 'clinic';
+            if (lower.includes('anes')) return 'anes';
+            if (lower.includes('research')) return 'research';
+            if (lower.includes('orientation')) return 'orientation';
+            if (lower.includes('holiday')) return 'holiday';
+            if (lower.includes('vacation')) return 'vacation';
+            return '';
+        }
+
         let currentWeekFile = '';
-        
-        // Generate all weeks from 6/30/2025 to 6/26/2026 (displayed Monday–Friday)
+
+        // Generate weeks
         function generateWeeks() {
             const weeks = [];
-            let currentDate = new Date(2025, 5, 30); // June 30, 2025 (month is 0-indexed)
-            const endDate = new Date(2026, 5, 26); // June 26, 2026
+            let currentDate = new Date(2025, 5, 30);
+            const endDate = new Date(2026, 5, 26);
 
             while (currentDate <= endDate) {
                 const weekStart = new Date(currentDate);
                 const weekEnd = new Date(currentDate);
-                // End of week is now Friday
                 weekEnd.setDate(weekEnd.getDate() + 4);
                 
                 const formatDate = (date, includeYear) => {
@@ -346,17 +320,16 @@
             for (let i = 0; i < weeks.length; i++) {
                 const weekStart = new Date(weeks[i].startDate);
                 const weekEnd = new Date(weekStart);
-                // Current week spans Monday to Friday
                 weekEnd.setDate(weekEnd.getDate() + 4);
                 
                 if (today >= weekStart && today <= weekEnd) {
                     return i;
                 }
             }
-            return 0; // Default to first week if current week not found
+            return 0;
         }
 
-        // Parse CSV data
+        // Parse CSV
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
             if (lines.length === 0) return null;
@@ -375,7 +348,6 @@
             });
 
             const data = [];
-
             for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(',').map(v => v.trim());
                 const row = {};
@@ -389,158 +361,136 @@
         }
 
         // Create table headers
-function createTableHeaders(startDate, mobile = false) {
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-            const labels = mobile ? days.map(d => d.slice(0, 3)) : days;
+        function createTableHeaders(startDate) {
+            const isMobile = window.innerWidth <= 768;
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+            
             const dates = days.map((_, idx) => {
                 const d = new Date(startDate);
                 d.setDate(d.getDate() + idx);
                 return `${d.getMonth() + 1}/${d.getDate()}`;
             });
 
-            if (mobile) {
-                const headerHtml = `
-                    <tr>
-                        <th>NAME</th>
-                        ${labels.map((day, i) => `<th class="day-header">${day}<br>${dates[i]}</th>`).join('')}
-                    </tr>
-                `;
-                return headerHtml;
-            }
-
             const headerHtml = `
                 <tr>
-                    <th rowspan="2">NAME</th>
-                    ${days.map((day, i) => `<th colspan="2" class="day-header">${day}<br>${dates[i]}</th>`).join('')}
-                </tr>
-                <tr>
-                    ${days.map((day, index) => {
-                        const isDivider = index < days.length - 1;
-                        return `<th class="time-header">AM</th><th class="time-header${isDivider ? ' day-divider' : ''}">PM</th>`;
-                    }).join('')}
+                    <th>Name</th>
+                    ${days.map((day, i) => `
+                        <th class="day-header">
+                            ${day}
+                            ${isMobile ? `<br><span class="date-label">${dates[i]}</span>` : ` ${dates[i]}`}
+                        </th>
+                    `).join('')}
                 </tr>
             `;
             return headerHtml;
-}
-
-
-        // Style cell content based on value
-        function styleCellContent(content) {
-            if (!content || content === '-' || content === '') return '-';
-
-            const lowerContent = content.toLowerCase();
-
-            // Check for orientation
-            if (lowerContent === 'orientation') {
-                return `<span class="orientation-cell">Orientation</span>`;
-            }
-
-            // Check for holidays
-            if (lowerContent.includes('holiday')) {
-                // Special case for 4th of July in the 6/30 week
-                if (lowerContent.includes('4th of july') && currentWeekFile === 'week_6_30_25.csv') {
-                    return `<span class="july4-cell">4th of July</span>`;
-                }
-                return `<span class="holiday-cell">${content}</span>`;
-            }
-
-            // Check for vacation
-            if (lowerContent === 'vacation') {
-                return `<span class="vacation-cell">${content}</span>`;
-            }
-
-            // Check for research
-            if (lowerContent === 'research') {
-                return `<span class="research-cell">${content}</span>`;
-            }
-
-            return content;
         }
 
-        // Load and display schedule
+        // Style cell content
+        function styleCellContent(amContent, pmContent) {
+            const amClass = getActivityClass(amContent);
+            const pmClass = getActivityClass(pmContent);
+            const amText = formatSpecialContent(amContent) || '-';
+            const pmText = formatSpecialContent(pmContent) || '-';
+            
+            return `
+                <div class="shift-cell">
+                    <div class="am-shift ${amClass}">${amText}</div>
+                    <div class="shift-divider"></div>
+                    <div class="pm-shift ${pmClass}">${pmText}</div>
+                </div>
+            `;
+        }
+
+        // Sample data for week_6_30_25.csv
+        const sampleData = {
+            'week_6_30_25.csv': `NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
+Tarar,6,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,VA1,UMHS-2,UMHS-2,Holiday (4th of July),Holiday (4th of July)
+Mansour,6,EOD1,CC/JB,Priv Anes,Priv Anes,EOD1,Research,Priv Anes,Priv Anes,Holiday (4th of July),Holiday (4th of July)
+Deda,6,VA2,CC/VA2,VA2,VA2,VA2,VA2,VA2,VA2,Holiday (4th of July),Holiday (4th of July)
+Fard,5,VA1,VA1,VA1,VA1,VA1,CC/PC,VA1,VA1,Holiday (4th of July),Holiday (4th of July)
+Gandhi,5,UMHS-1,CC/VA3,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,Holiday (4th of July),Holiday (4th of July)
+Islam,5,VA3,Amb/JB,Research,Research,Amb/PC,CC/PC,Research,Research,Holiday (4th of July),Holiday (4th of July)
+Ali,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Merchant,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Zaher,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)`
+        };
+
+        // Load schedule
         async function loadSchedule(weekFile, startDate) {
-            currentWeekFile = weekFile; // Track current week for special styling
-            const mobile = window.matchMedia('(max-width: 768px)').matches;
+            currentWeekFile = weekFile;
+            const isMobile = window.innerWidth <= 768;
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
             const table = document.getElementById('schedule-table');
             const tableHeader = document.getElementById('table-header');
             const tableBody = document.getElementById('table-body');
             
-            // Show loading
             loadingMsg.classList.remove('hidden');
             noDataMsg.classList.add('hidden');
             table.style.display = 'none';
             
             try {
-                const response = await fetch(weekFile);
-                if (!response.ok) {
-                    throw new Error('File not found');
+                let csvText;
+                
+                // Use sample data if available, otherwise try to fetch
+                if (sampleData[weekFile]) {
+                    csvText = sampleData[weekFile];
+                } else {
+                    const response = await fetch(weekFile);
+                    if (!response.ok) throw new Error('File not found');
+                    csvText = await response.text();
                 }
                 
-                const csvText = await response.text();
                 const parsedData = parseCSV(csvText);
                 
                 if (!parsedData || parsedData.data.length === 0) {
                     throw new Error('No data');
                 }
                 
-                // Create headers with dates for each day
-                tableHeader.innerHTML = createTableHeaders(startDate, mobile);
+                tableHeader.innerHTML = createTableHeaders(startDate);
 
                 // Create rows
                 const rowsHtml = parsedData.data.map(row => {
-                    const nameCell = `<td class="text-left">${row.NAME || ''}<span class="pgy-badge">PGY-${row.PGY || ''}</span></td>`;
+                    const name = row.NAME || '';
+                    const pgy = row.PGY || '';
+                    const nameCell = isMobile 
+                        ? `<td>${name}<span class="pgy">${pgy ? `-${pgy}` : ''}</span></td>`
+                        : `<td>${name}<span class="pgy-badge">PGY-${pgy}</span></td>`;
+                    
                     const cells = [nameCell];
-
-                    if (mobile) {
-                        for (let d = 0; d < 5; d++) {
-                            const am = row[d === 0 ? 'AM' : `AM${d + 1}`] || '';
-                            const pm = row[d === 0 ? 'PM' : `PM${d + 1}`] || '';
-                            const isDivider = d < 4;
-                            cells.push(`
-                                <td${isDivider ? ' class="day-divider"' : ''}>
-                                    <span class="slot-indicator">☀️</span> ${styleCellContent(am)}
-                                    <hr class="am-pm-separator">
-                                    <span class="slot-indicator">🌙</span> ${styleCellContent(pm)}
-                                </td>`);
-                        }
-                    } else {
-                        // Add AM/PM slots (skip NAME and PGY columns)
-                        for (let i = 2; i < parsedData.headers.length; i++) {
-                            const content = row[parsedData.headers[i]] || '';
-                            const cellIndex = i - 2;
-                            const isDivider = cellIndex % 2 === 1 && cellIndex < parsedData.headers.length - 4;
-                            cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(content)}</td>`);
-                        }
+                    
+                    // Add day cells
+                    for (let d = 0; d < 5; d++) {
+                        const amKey = d === 0 ? 'AM' : `AM${d + 1}`;
+                        const pmKey = d === 0 ? 'PM' : `PM${d + 1}`;
+                        const amContent = row[amKey] || '';
+                        const pmContent = row[pmKey] || '';
+                        
+                        cells.push(`<td>${styleCellContent(amContent, pmContent)}</td>`);
                     }
-
+                    
                     return `<tr>${cells.join('')}</tr>`;
                 }).join('');
                 
                 tableBody.innerHTML = rowsHtml;
-                
-                // Show table
                 loadingMsg.classList.add('hidden');
                 table.style.display = 'table';
                 
             } catch (error) {
-                // Show no data message
                 loadingMsg.classList.add('hidden');
                 noDataMsg.classList.remove('hidden');
                 table.style.display = 'none';
             }
         }
 
-
-        // Initialize the application
+        // Initialize
         function init() {
             const weekSelect = document.getElementById('week-select');
             const prevBtn = document.getElementById('prev-week');
             const nextBtn = document.getElementById('next-week');
             const weeks = generateWeeks();
             
-            // Populate dropdown
             weeks.forEach((week, index) => {
                 const option = document.createElement('option');
                 option.value = week.file;
@@ -549,14 +499,11 @@ function createTableHeaders(startDate, mobile = false) {
                 weekSelect.appendChild(option);
             });
             
-            // Set current week
             let currentWeekIndex = getCurrentWeek(weeks);
             weekSelect.selectedIndex = currentWeekIndex;
             
-            // Load the schedule for the selected week
             loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
             
-            // Handle week selection change
             weekSelect.addEventListener('change', (e) => {
                 currentWeekIndex = e.target.selectedIndex;
                 loadSchedule(e.target.value, weeks[currentWeekIndex].startDate);
@@ -577,10 +524,17 @@ function createTableHeaders(startDate, mobile = false) {
                     weekSelect.dispatchEvent(new Event('change'));
                 }
             });
+            
+            // Reload on window resize to adjust for mobile/desktop
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
+                }, 250);
+            });
         }
 
-
-        // Run on page load
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>

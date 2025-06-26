@@ -4,5 +4,4 @@ This project displays weekly schedules for the University of Missouri Division o
 
 ## Mobile layout
 
-When viewed on screens narrower than 768&nbsp;px each day collapses into a single column. AM and PM duties are stacked with a small divider for clarity. PGY information is shown as a badge next to the fellow's name instead of its own column.
-
+When the screen width is 768&nbsp;px or less a compact layout is used. AM and PM duties are stacked inside each cell with a tiny divider. PGY information is shown inline with the fellow name. Rotation names are abbreviated for Orientation (`Ori`) and all holidays (`🎆`).
