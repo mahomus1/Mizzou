@@ -140,7 +140,7 @@
         }
         .slot-indicator {
             font-weight: 600;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--mizzou-black);
         }
         /* Cell content styling */
@@ -193,20 +193,20 @@
         /* Mobile responsiveness */
         @media (max-width: 768px) {
             th, td {
-                padding: 0.125rem;
+                padding: 0.0625rem;
                 font-size: 0.625rem;
             }
             .controls {
                 padding: 0.5rem;
             }
             tbody td:nth-child(1) {
-                min-width: 60px;
-                max-width: 60px;
+                min-width: 40px;
+                max-width: 40px;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
             thead th:nth-child(1) {
-                min-width: 60px;
+                min-width: 40px;
             }
             table {
                 min-width: 600px;
@@ -217,7 +217,7 @@
                 margin-left: 0.125rem;
             }
             .slot-indicator {
-                font-size: 0.55rem;
+                font-size: 0.45rem;
             }
             .orientation-cell,
             .holiday-cell,
@@ -494,9 +494,9 @@ function createTableHeaders(startDate, mobile = false) {
                             const isDivider = d < 4;
                             cells.push(`
                                 <td${isDivider ? ' class="day-divider"' : ''}>
-                                    <span class="slot-indicator">AM</span> ${styleCellContent(am)}
+                                    <span class="slot-indicator">☀️</span> ${styleCellContent(am)}
                                     <hr class="am-pm-separator">
-                                    <span class="slot-indicator">PM</span> ${styleCellContent(pm)}
+                                    <span class="slot-indicator">🌙</span> ${styleCellContent(pm)}
                                 </td>`);
                         }
                     } else {
