@@ -293,10 +293,22 @@
         function parseCSV(csvText) {
             const lines = csvText.trim().split('\n');
             if (lines.length === 0) return null;
-            
-            const headers = lines[0].split(',').map(h => h.trim());
+
+            const rawHeaders = lines[0].split(',').map(h => h.trim());
+            const headers = [];
+            const counts = {};
+            rawHeaders.forEach(h => {
+                if (counts[h]) {
+                    counts[h] += 1;
+                    headers.push(`${h}${counts[h]}`);
+                } else {
+                    counts[h] = 1;
+                    headers.push(h);
+                }
+            });
+
             const data = [];
-            
+
             for (let i = 1; i < lines.length; i++) {
                 const values = lines[i].split(',').map(v => v.trim());
                 const row = {};
@@ -305,7 +317,7 @@
                 });
                 data.push(row);
             }
-            
+
             return { headers, data };
         }
 
