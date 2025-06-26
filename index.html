@@ -269,16 +269,17 @@
         // Track current week for special holiday styling
         let currentWeekFile = '';
         
-        // Generate all weeks from 6/30/2025 to 6/26/2026
+        // Generate all weeks from 6/30/2025 to 6/26/2026 (displayed Monday–Friday)
         function generateWeeks() {
             const weeks = [];
             let currentDate = new Date(2025, 5, 30); // June 30, 2025 (month is 0-indexed)
             const endDate = new Date(2026, 5, 26); // June 26, 2026
-            
+
             while (currentDate <= endDate) {
                 const weekStart = new Date(currentDate);
                 const weekEnd = new Date(currentDate);
-                weekEnd.setDate(weekEnd.getDate() + 6);
+                // End of week is now Friday
+                weekEnd.setDate(weekEnd.getDate() + 4);
                 
                 const formatDate = (date, includeYear) => {
                     const month = date.getMonth() + 1;
@@ -317,7 +318,8 @@
             for (let i = 0; i < weeks.length; i++) {
                 const weekStart = new Date(weeks[i].startDate);
                 const weekEnd = new Date(weekStart);
-                weekEnd.setDate(weekEnd.getDate() + 6);
+                // Current week spans Monday to Friday
+                weekEnd.setDate(weekEnd.getDate() + 4);
                 
                 if (today >= weekStart && today <= weekEnd) {
                     return i;
@@ -359,13 +361,18 @@
         }
 
         // Create table headers
-function createTableHeaders() {
+function createTableHeaders(startDate) {
             const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const dates = days.map((_, idx) => {
+                const d = new Date(startDate);
+                d.setDate(d.getDate() + idx);
+                return `${d.getMonth() + 1}/${d.getDate()}`;
+            });
             const headerHtml = `
                 <tr>
                     <th rowspan="2">NAME</th>
                     <th rowspan="2">PGY</th>
-                    ${days.map(day => `<th colspan="2" class="day-header">${day}</th>`).join('')}
+                    ${days.map((day, i) => `<th colspan="2" class="day-header">${day}<br>${dates[i]}</th>`).join('')}
                 </tr>
                 <tr>
                     ${days.map((day, index) => {
@@ -412,7 +419,7 @@ function createTableHeaders() {
         }
 
         // Load and display schedule
-        async function loadSchedule(weekFile) {
+        async function loadSchedule(weekFile, startDate) {
             currentWeekFile = weekFile; // Track current week for special styling
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
@@ -438,8 +445,8 @@ function createTableHeaders() {
                     throw new Error('No data');
                 }
                 
-                // Create headers
-                tableHeader.innerHTML = createTableHeaders();
+                // Create headers with dates for each day
+                tableHeader.innerHTML = createTableHeaders(startDate);
                 
                 // Create rows
                 const rowsHtml = parsedData.data.map(row => {
@@ -492,11 +499,11 @@ function createTableHeaders() {
             weekSelect.selectedIndex = currentWeekIndex;
             
             // Load the schedule for the selected week
-            loadSchedule(weekSelect.value);
+            loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
             
             // Handle week selection change
             weekSelect.addEventListener('change', (e) => {
-                loadSchedule(e.target.value);
+                loadSchedule(e.target.value, weeks[e.target.selectedIndex].startDate);
             });
         }
 
