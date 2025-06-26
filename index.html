@@ -70,7 +70,7 @@
         }
         
         /* Mobile compact styles */
-        @media (max-width: 768px) {
+        @media (max-width: 650px) {
             .mizzou-header h1 { font-size: 1.25rem; }
             .mizzou-header p { font-size: 0.75rem; }
             
@@ -362,7 +362,7 @@
 
         // Create table headers
         function createTableHeaders(startDate) {
-            const isMobile = window.innerWidth <= 768;
+            const isMobile = window.innerWidth <= 650;
             const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
             
             const dates = days.map((_, idx) => {
@@ -419,7 +419,7 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
         // Load schedule
         async function loadSchedule(weekFile, startDate) {
             currentWeekFile = weekFile;
-            const isMobile = window.innerWidth <= 768;
+            const isMobile = window.innerWidth <= 650;
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
             const table = document.getElementById('schedule-table');
