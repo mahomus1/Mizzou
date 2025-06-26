@@ -61,6 +61,27 @@
             max-height: 75vh;
             overflow-y: auto;
         }
+        .card-container {
+            display: none;
+        }
+        .schedule-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1rem;
+        }
+        .schedule-card h3 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .day-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+        }
+        .day-row:nth-child(odd) {
+            background-color: var(--mizzou-gray-row);
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -192,15 +213,15 @@
             .controls {
                 padding: 1rem;
             }
-            tbody td:nth-child(1) {
-                min-width: 120px;
-            }
-            tbody td:nth-child(2),
-            thead th:nth-child(2) {
-                left: 120px;
-            }
             table {
-                min-width: 800px;
+                min-width: 600px;
+            }
+            tbody td:nth-child(1),
+            tbody td:nth-child(2),
+            thead th:nth-child(1),
+            thead th:nth-child(2) {
+                position: static;
+                left: auto;
             }
             .orientation-cell,
             .holiday-cell,
@@ -235,6 +256,13 @@
                     <!-- Options will be populated by JavaScript -->
                 </select>
             </div>
+            <div class="mt-4 sm:mt-0">
+                <label for="view-select" class="block text-lg font-medium text-gray-700 mb-2">View Mode</label>
+                <select id="view-select" class="w-full sm:w-auto">
+                    <option value="table">Table View</option>
+                    <option value="card">Card View</option>
+                </select>
+            </div>
         </div>
 
         <div id="schedule-container" class="table-container">
@@ -251,6 +279,7 @@
                 </tbody>
             </table>
         </div>
+        <div id="card-container" class="card-container space-y-4"></div>
 
         <footer class="mizzou-footer">
             <p>&copy; 2025 University of Missouri Gastroenterology Division</p>
@@ -418,6 +447,58 @@ function createTableHeaders(startDate) {
             return content;
         }
 
+        function renderTable(parsedData, startDate) {
+            const tableHeader = document.getElementById('table-header');
+            const tableBody = document.getElementById('table-body');
+
+            tableHeader.innerHTML = createTableHeaders(startDate);
+
+            const rowsHtml = parsedData.data.map(row => {
+                const cells = [
+                    `<td>${row.NAME || ''}</td>`,
+                    `<td>${row.PGY || ''}</td>`
+                ];
+
+                for (let i = 2; i < parsedData.headers.length; i++) {
+                    const content = row[parsedData.headers[i]] || '';
+                    const cellIndex = i - 2;
+                    const isDivider = cellIndex % 2 === 1 && cellIndex < parsedData.headers.length - 4;
+                    cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(content)}</td>`);
+                }
+
+                return `<tr>${cells.join('')}</tr>`;
+            }).join('');
+
+            tableBody.innerHTML = rowsHtml;
+        }
+
+        function renderCards(parsedData) {
+            const cardContainer = document.getElementById('card-container');
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+            const cardsHtml = parsedData.data.map(row => {
+                const rows = days.map((day, i) => {
+                    const am = styleCellContent(row[parsedData.headers[2 + i*2]] || '');
+                    const pm = styleCellContent(row[parsedData.headers[3 + i*2]] || '');
+                    return `<div class="day-row"><span class="font-medium w-20">${day}</span><span class="flex-1 text-center">${am}</span><span class="flex-1 text-center">${pm}</span></div>`;
+                }).join('');
+                return `<div class="schedule-card"><h3>${row.NAME || ''} <span class="ml-2 text-sm text-gray-500">PGY ${row.PGY || ''}</span></h3>${rows}</div>`;
+            }).join('');
+            cardContainer.innerHTML = cardsHtml;
+        }
+
+        function updateView() {
+            const view = document.getElementById('view-select').value;
+            const tableContainer = document.getElementById('schedule-container');
+            const cardContainer = document.getElementById('card-container');
+            if (view === 'card') {
+                tableContainer.style.display = 'none';
+                cardContainer.style.display = 'block';
+            } else {
+                cardContainer.style.display = 'none';
+                tableContainer.style.display = 'block';
+            }
+        }
+
         // Load and display schedule
         async function loadSchedule(weekFile, startDate) {
             currentWeekFile = weekFile; // Track current week for special styling
@@ -426,11 +507,13 @@ function createTableHeaders(startDate) {
             const table = document.getElementById('schedule-table');
             const tableHeader = document.getElementById('table-header');
             const tableBody = document.getElementById('table-body');
+            const cardContainer = document.getElementById('card-container');
             
             // Show loading
             loadingMsg.classList.remove('hidden');
             noDataMsg.classList.add('hidden');
             table.style.display = 'none';
+            cardContainer.style.display = 'none';
             
             try {
                 const response = await fetch(weekFile);
@@ -445,44 +528,26 @@ function createTableHeaders(startDate) {
                     throw new Error('No data');
                 }
                 
-                // Create headers with dates for each day
-                tableHeader.innerHTML = createTableHeaders(startDate);
-                
-                // Create rows
-                const rowsHtml = parsedData.data.map(row => {
-                    const cells = [
-                        `<td>${row.NAME || ''}</td>`,
-                        `<td>${row.PGY || ''}</td>`
-                    ];
-                    
-                    // Add AM/PM slots (skip NAME and PGY columns)
-                    for (let i = 2; i < parsedData.headers.length; i++) {
-                        const content = row[parsedData.headers[i]] || '';
-                        const cellIndex = i - 2;
-                        const isDivider = cellIndex % 2 === 1 && cellIndex < parsedData.headers.length - 4;
-                        cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(content)}</td>`);
-                    }
-                    
-                    return `<tr>${cells.join('')}</tr>`;
-                }).join('');
-                
-                tableBody.innerHTML = rowsHtml;
-                
-                // Show table
+                renderTable(parsedData, startDate);
+                renderCards(parsedData);
+
+                // Show chosen view
                 loadingMsg.classList.add('hidden');
-                table.style.display = 'table';
+                updateView();
                 
             } catch (error) {
                 // Show no data message
                 loadingMsg.classList.add('hidden');
                 noDataMsg.classList.remove('hidden');
                 table.style.display = 'none';
+                cardContainer.style.display = 'none';
             }
         }
 
         // Initialize the application
         function init() {
             const weekSelect = document.getElementById('week-select');
+            const viewSelect = document.getElementById('view-select');
             const weeks = generateWeeks();
             
             // Populate dropdown
@@ -498,6 +563,11 @@ function createTableHeaders(startDate) {
             const currentWeekIndex = getCurrentWeek(weeks);
             weekSelect.selectedIndex = currentWeekIndex;
             
+            // Default view based on screen size
+            if (window.innerWidth <= 768) {
+                viewSelect.value = 'card';
+            }
+
             // Load the schedule for the selected week
             loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
             
@@ -505,6 +575,7 @@ function createTableHeaders(startDate) {
             weekSelect.addEventListener('change', (e) => {
                 loadSchedule(e.target.value, weeks[e.target.selectedIndex].startDate);
             });
+            viewSelect.addEventListener('change', updateView);
         }
 
 
