@@ -1,11 +1,11 @@
-NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
-Mansour,6,EOD1,CC/GK,EOD1,Research,EOD1,Research,EOD1,Research,EOD1,Research,Research,Research
-Tarar,6,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation
-Deda,6,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation
-Ghandi,5,Pvt Anes,Research,Pvt Anes,Research,Pvt Anes,CC/JB,Pvt Anes,Research,Pvt Anes,Research,Research,Research
-Mohamed,5,VA3,VA2,VA3,VA2,VA3,VA3,VA3,VA3,VA3,VA3,VA2,CC/VA2
-Fard,5,VA2,VA1,VA2,CC/GK,VA2,VA2,VA2,VA2,VA2,VA2,EOD1,CC/JB
-Ali,4,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-2,UMHS-2
-Merchant,4,VA1,CC/PC,VA1,VA1,VA1,VA1,VA1,VA1,VA1,VA1,UMHS-1,CC/VA3
-Mahdi,4,VA4,VA3,Amb/GH,CC/GK,VA4,Amb/JB,VA4,Amb/PC,VA4,VA4,VA1,VA1
-Zaher,4,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,CC/PC,UMHS-2,UMHS-2,VA3,Amb/JB
+NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
+Tarar,6,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,VA1,UMHS-2,UMHS-2,Holiday (4th of July),Holiday (4th of July)
+Mansour,6,EOD1,CC/JB,Priv Anes,Priv Anes,EOD1,Research,Priv Anes,Priv Anes,Holiday (4th of July),Holiday (4th of July)
+Deda,6,VA2,CC/VA2,VA2,VA2,VA2,VA2,VA2,VA2,Holiday (4th of July),Holiday (4th of July)
+Fard,5,VA1,VA1,VA1,VA1,VA1,CC/PC,VA1,VA1,Holiday (4th of July),Holiday (4th of July)
+Gandhi,5,UMHS-1,CC/VA3,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,Holiday (4th of July),Holiday (4th of July)
+Islam,5,VA3,Amb/JB,Research,Research,Amb/PC,CC/PC,Research,Research,Holiday (4th of July),Holiday (4th of July)
+Ali,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Merchant,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Zaher,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
+Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,Holiday (4th of July),Holiday (4th of July)
