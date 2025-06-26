@@ -117,16 +117,42 @@
             .shift-cell {
                 text-align: center;
                 line-height: 1.1;
+                position: relative;
             }
-            
+
             .am-shift, .pm-shift {
-                display: block;
-                padding: 0.0625rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.0625rem 0.125rem;
                 font-size: 0.5rem;
                 font-weight: 500;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                gap: 0.0625rem;
+            }
+
+            /* AM/PM indicators */
+            .time-indicator {
+                font-size: 0.425rem;
+                opacity: 0.75;
+                margin-right: 0.0625rem;
+                font-weight: 400;
+                flex-shrink: 0;
+                line-height: 1;
+                vertical-align: middle;
+                display: inline-block;
+            }
+
+            .am-indicator {
+                color: #f59e0b; /* Amber/gold for sun */
+                filter: brightness(1.1);
+            }
+
+            .pm-indicator {
+                color: #6366f1; /* Indigo/blue for moon */
+                filter: brightness(0.9);
             }
             
             .shift-divider {
@@ -242,6 +268,10 @@
         // - Orientation → Ori
         // - Holiday (any) → 🎆
         // All other rotation names remain in full
+
+        // Sun and moon indicators for AM/PM
+        const AM_INDICATOR = '☀';
+        const PM_INDICATOR = '☽';
         
         // Special formatting for holidays and orientation only
         function formatSpecialContent(text) {
@@ -391,12 +421,29 @@
             const pmClass = getActivityClass(pmContent);
             const amText = formatSpecialContent(amContent) || '-';
             const pmText = formatSpecialContent(pmContent) || '-';
-            
+
+            // Special case: if both AM and PM are the same holiday emoji, show it centered
+            if (amText === '🎆' && pmText === '🎆') {
+                return `
+                    <div class="shift-cell">
+                        <div class="holiday" style="text-align: center; padding: 0.125rem 0; font-size: 0.625rem;">
+                            🎆
+                        </div>
+                    </div>
+                `;
+            }
+
             return `
                 <div class="shift-cell">
-                    <div class="am-shift ${amClass}">${amText}</div>
+                    <div class="am-shift ${amClass}">
+                        <span class="time-indicator am-indicator">${AM_INDICATOR}</span>
+                        ${amText}
+                    </div>
                     <div class="shift-divider"></div>
-                    <div class="pm-shift ${pmClass}">${pmText}</div>
+                    <div class="pm-shift ${pmClass}">
+                        <span class="time-indicator pm-indicator">${PM_INDICATOR}</span>
+                        ${pmText}
+                    </div>
                 </div>
             `;
         }
