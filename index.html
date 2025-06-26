@@ -89,40 +89,28 @@
             z-index: 10;
             white-space: nowrap;
         }
-        /* Sticky first two columns (NAME and PGY) */
-        thead th:nth-child(1),
-        thead th:nth-child(2) {
+        /* Sticky first column (NAME) */
+        thead th:nth-child(1) {
             position: sticky;
             left: 0;
             z-index: 12;
             background-color: var(--mizzou-black);
         }
-        thead th:nth-child(2) {
-            left: 170px; /* Adjust based on first column width */
-        }
-        tbody td:nth-child(1),
-        tbody td:nth-child(2) {
+        tbody td:nth-child(1) {
             position: sticky;
+            left: 0;
             background-color: white;
             z-index: 5;
+            font-weight: 600;
+            min-width: 170px;
         }
         .compact-view thead th,
         .compact-view tbody td {
             position: static !important;
             left: auto !important;
         }
-        .compact-view tbody td:nth-child(1),
-        .compact-view tbody td:nth-child(2) {
+        .compact-view tbody td:nth-child(1) {
             min-width: auto;
-        }
-        tbody td:nth-child(1) {
-            left: 0;
-            font-weight: 600;
-            min-width: 170px;
-        }
-        tbody td:nth-child(2) {
-            left: 170px;
-            min-width: 50px;
         }
         /* Row styling */
         tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
@@ -130,12 +118,9 @@
         tr:hover { background-color: var(--mizzou-hover-gold); }
         
         /* Ensure sticky columns maintain row colors */
-        tr:nth-child(odd) td:nth-child(1),
-        tr:nth-child(odd) td:nth-child(2) { background-color: #ffffff; }
-        tr:nth-child(even) td:nth-child(1),
-        tr:nth-child(even) td:nth-child(2) { background-color: var(--mizzou-gray-row); }
-        tr:hover td:nth-child(1),
-        tr:hover td:nth-child(2) { background-color: var(--mizzou-hover-gold); }
+        tr:nth-child(odd) td:nth-child(1) { background-color: #ffffff; }
+        tr:nth-child(even) td:nth-child(1) { background-color: var(--mizzou-gray-row); }
+        tr:hover td:nth-child(1) { background-color: var(--mizzou-hover-gold); }
         
         /* Time slot headers */
         .day-header {
@@ -149,9 +134,22 @@
             background-color: var(--mizzou-black);
             color: var(--mizzou-gold);
         }
+        .pgy-badge {
+            background-color: var(--mizzou-gold-dark);
+            color: var(--mizzou-black);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-left: 0.25rem;
+        }
         /* Add vertical dividers between days */
         .day-divider {
             border-right: 2px solid #e5e7eb !important;
+        }
+        .am-pm-separator {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 0.125rem 0;
         }
         /* Cell content styling */
         td {
@@ -217,10 +215,6 @@
             }
             tbody td:nth-child(1) {
                 min-width: 100px;
-            }
-            tbody td:nth-child(2),
-            thead th:nth-child(2) {
-                left: 100px;
             }
             table {
                 min-width: 700px;
@@ -391,17 +385,27 @@
         }
 
         // Create table headers
-function createTableHeaders(startDate) {
+function createTableHeaders(startDate, mobile = false) {
             const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
             const dates = days.map((_, idx) => {
                 const d = new Date(startDate);
                 d.setDate(d.getDate() + idx);
                 return `${d.getMonth() + 1}/${d.getDate()}`;
             });
+
+            if (mobile) {
+                const headerHtml = `
+                    <tr>
+                        <th>NAME</th>
+                        ${days.map((day, i) => `<th class="day-header">${day}<br>${dates[i]}</th>`).join('')}
+                    </tr>
+                `;
+                return headerHtml;
+            }
+
             const headerHtml = `
                 <tr>
                     <th rowspan="2">NAME</th>
-                    <th rowspan="2">PGY</th>
                     ${days.map((day, i) => `<th colspan="2" class="day-header">${day}<br>${dates[i]}</th>`).join('')}
                 </tr>
                 <tr>
@@ -451,6 +455,7 @@ function createTableHeaders(startDate) {
         // Load and display schedule
         async function loadSchedule(weekFile, startDate) {
             currentWeekFile = weekFile; // Track current week for special styling
+            const mobile = window.matchMedia('(max-width: 768px)').matches;
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
             const table = document.getElementById('schedule-table');
@@ -476,23 +481,30 @@ function createTableHeaders(startDate) {
                 }
                 
                 // Create headers with dates for each day
-                tableHeader.innerHTML = createTableHeaders(startDate);
-                
+                tableHeader.innerHTML = createTableHeaders(startDate, mobile);
+
                 // Create rows
                 const rowsHtml = parsedData.data.map(row => {
-                    const cells = [
-                        `<td>${row.NAME || ''}</td>`,
-                        `<td>${row.PGY || ''}</td>`
-                    ];
-                    
-                    // Add AM/PM slots (skip NAME and PGY columns)
-                    for (let i = 2; i < parsedData.headers.length; i++) {
-                        const content = row[parsedData.headers[i]] || '';
-                        const cellIndex = i - 2;
-                        const isDivider = cellIndex % 2 === 1 && cellIndex < parsedData.headers.length - 4;
-                        cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(content)}</td>`);
+                    const nameCell = `<td class="text-left">${row.NAME || ''}<span class="pgy-badge">PGY-${row.PGY || ''}</span></td>`;
+                    const cells = [nameCell];
+
+                    if (mobile) {
+                        for (let d = 0; d < 5; d++) {
+                            const am = row[d === 0 ? 'AM' : `AM${d + 1}`] || '';
+                            const pm = row[d === 0 ? 'PM' : `PM${d + 1}`] || '';
+                            const isDivider = d < 4;
+                            cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(am)}<hr class="am-pm-separator">${styleCellContent(pm)}</td>`);
+                        }
+                    } else {
+                        // Add AM/PM slots (skip NAME and PGY columns)
+                        for (let i = 2; i < parsedData.headers.length; i++) {
+                            const content = row[parsedData.headers[i]] || '';
+                            const cellIndex = i - 2;
+                            const isDivider = cellIndex % 2 === 1 && cellIndex < parsedData.headers.length - 4;
+                            cells.push(`<td${isDivider ? ' class="day-divider"' : ''}>${styleCellContent(content)}</td>`);
+                        }
                     }
-                    
+
                     return `<tr>${cells.join('')}</tr>`;
                 }).join('');
                 
