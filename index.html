@@ -149,6 +149,119 @@
             color: #059669;
             font-weight: 600;
         }
+
+        /* Orientation cell styling */
+        .orientation-cell {
+            background: linear-gradient(135deg, #fbbf24 0%, #fde68a 100%);
+            color: #92400e;
+            font-weight: 700;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            position: relative;
+            overflow: hidden;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .orientation-cell::before {
+            content: "\1F393"; /* 🎓 */
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 1rem;
+            opacity: 0.3;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* General holiday cell styling */
+        .holiday-cell {
+            background: linear-gradient(45deg, #e0e7ff 0%, #c7d2fe 100%);
+            color: #4c1d95;
+            font-weight: 600;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            position: relative;
+        }
+
+        /* 4th of July specific styling */
+        .july4-cell {
+            background: linear-gradient(180deg, #ef4444 0%, #ffffff 33%, #ffffff 66%, #3b82f6 100%);
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            position: relative;
+            overflow: hidden;
+            animation: patriotic-wave 4s ease-in-out infinite;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .july4-cell::before {
+            content: "\1F386"; /* 🎆 */
+            position: absolute;
+            top: -5px;
+            right: 2px;
+            font-size: 1.2rem;
+            animation: firework-pop 2s ease-in-out infinite;
+        }
+
+        .july4-cell::after {
+            content: "\1F1FA\1F1F8"; /* 🇺🇸 */
+            position: absolute;
+            bottom: -5px;
+            left: 2px;
+            font-size: 1rem;
+            opacity: 0.6;
+        }
+
+        @keyframes patriotic-wave {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes firework-pop {
+            0%, 100% {
+                transform: scale(0.8) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Fireworks animation for 4th of July cells */
+        .fireworks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .firework {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #ff0000 0%, transparent 70%);
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0) translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(20) translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
         .no-data {
             text-align: center;
             padding: 3rem;
@@ -173,6 +286,17 @@
             }
             table {
                 min-width: 800px;
+            }
+            .orientation-cell,
+            .holiday-cell,
+            .july4-cell {
+                font-size: 0.75rem;
+                padding: 0.375rem;
+            }
+            .orientation-cell::before,
+            .july4-cell::before,
+            .july4-cell::after {
+                font-size: 0.875rem;
             }
         }
         /* Loading spinner */
@@ -231,6 +355,9 @@
         // (NAME, PGY, then Mon AM/PM, Tue AM/PM, Wed AM/PM, Thu AM/PM, Fri AM/PM)
         
         // File naming: week_M_D_YY.csv (e.g., week_6_30_25.csv)
+
+        // Track current week for special holiday styling
+        let currentWeekFile = '';
         
         // Generate all weeks from 6/30/2025 to 6/26/2026
         function generateWeeks() {
@@ -322,7 +449,7 @@
         }
 
         // Create table headers
-        function createTableHeaders() {
+function createTableHeaders() {
             const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
             const headerHtml = `
                 <tr>
@@ -338,23 +465,69 @@
                 </tr>
             `;
             return headerHtml;
+}
+
+        // Create mini fireworks effect for 4th of July
+        function createFireworks() {
+            const colors = ['#ff0000', '#ffffff', '#0000ff', '#ffff00'];
+            let fireworksHtml = '<div class="fireworks">';
+
+            for (let i = 0; i < 3; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const x = (Math.random() - 0.5) * 20;
+                const y = (Math.random() - 0.5) * 20;
+                const delay = Math.random() * 1.5;
+
+                fireworksHtml += `<div class="firework" style="
+                    background: radial-gradient(circle, ${color} 0%, transparent 70%);
+                    --x: ${x}px;
+                    --y: ${y}px;
+                    animation-delay: ${delay}s;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                "></div>`;
+            }
+
+            fireworksHtml += '</div>';
+            return fireworksHtml;
         }
 
         // Style cell content based on value
         function styleCellContent(content) {
             if (!content || content === '-' || content === '') return '-';
-            
+
             const lowerContent = content.toLowerCase();
+
+            // Check for orientation
+            if (lowerContent === 'orientation') {
+                return `<span class="orientation-cell">Orientation</span>`;
+            }
+
+            // Check for holidays
+            if (lowerContent.includes('holiday')) {
+                // Special case for 4th of July in the 6/30 week
+                if (lowerContent.includes('4th of july') && currentWeekFile === 'week_6_30_25.csv') {
+                    return `<span class="july4-cell">4th of July 🎆</span>`;
+                }
+                return `<span class="holiday-cell">${content}</span>`;
+            }
+
+            // Check for vacation
             if (lowerContent === 'vacation') {
                 return `<span class="vacation-cell">${content}</span>`;
-            } else if (lowerContent === 'research') {
+            }
+
+            // Check for research
+            if (lowerContent === 'research') {
                 return `<span class="research-cell">${content}</span>`;
             }
+
             return content;
         }
 
         // Load and display schedule
         async function loadSchedule(weekFile) {
+            currentWeekFile = weekFile; // Track current week for special styling
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
             const table = document.getElementById('schedule-table');
