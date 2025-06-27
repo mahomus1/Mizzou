@@ -6,570 +6,258 @@
     <title>Weekly Schedule - Mizzou GI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         :root {
             --mizzou-black: #000000;
-            --mizzou-gold: #F1B82D;
+            --mizzou-gold: #FFB612;
             --mizzou-gold-dark: #C99700;
-
-            /* Clean, distinct colors for activities */
-            --umhs: #3b82f6;
-            --va: #10b981;
-            --clinic: #f97316;
-            --anes: #8b5cf6;
-            --research: #06b6d4;
-            --orientation: #eab308;
-            --holiday: #ef4444;
+            --mizzou-gray: #f8f8f8;
+            --mizzou-gray-row: #f2f2f2;
+            --mizzou-hover-gold: #FFF8E1;
         }
-
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
         body {
-            background: #f9fafb;
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--mizzou-gray);
         }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
-            color: white;
-            padding: 2rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 0.5rem 0;
-        }
-
-        .header p {
+        .mizzou-header {
+            background-color: var(--mizzou-black);
             color: var(--mizzou-gold);
-            font-size: 1.125rem;
-            margin: 0;
-        }
-
-        /* Week Navigation */
-        .week-nav {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        .nav-button {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0.75rem 1.25rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            color: #374151;
-            transition: all 0.2s;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-button:hover {
-            border-color: var(--mizzou-gold);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-button:active {
-            transform: translateY(0);
-        }
-
-        .week-display {
-            background: white;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #374151;
-            min-width: 200px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             text-align: center;
         }
-
-        /* Main Schedule Container */
-        .schedule-wrapper {
-            max-width: 1200px;
-            margin: 0 auto 3rem;
-            padding: 0 1.5rem;
+        .controls {
+            background-color: #ffffff;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-
-        .schedule-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+        select {
+            padding: 0.375rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.25rem;
+            border: 1px solid #d1d5db;
+            width: 100%;
         }
-
-        /* Schedule Table */
-        .schedule-table {
+        .table-container {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Base table styles */
+        table {
             width: 100%;
             border-collapse: collapse;
         }
-
-        /* Table Headers */
-        .schedule-table thead th {
-            background: #f9fafb;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #374151;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .schedule-table thead th:first-child {
-            width: 180px;
-        }
-
-        .day-header {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            text-align: center;
-        }
-
-        .day-name {
-            font-size: 0.875rem;
-            color: #111827;
-        }
-
-        .day-date {
-            font-size: 0.75rem;
-            color: #6b7280;
-            font-weight: 400;
-        }
-
-        /* Table Body */
-        .schedule-table tbody tr {
-            border-bottom: 1px solid #f3f4f6;
-            transition: background 0.2s;
-        }
-
-        .schedule-table tbody tr:hover {
-            background: #f9fafb;
-        }
-
-        .schedule-table tbody td {
-            padding: 0.75rem;
-        }
-
-        /* Fellow Cell */
-        .fellow-cell {
-            font-weight: 600;
-            color: #111827;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .pgy-badge {
-            background: var(--mizzou-gold);
-            color: black;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Day Cells */
-        .day-cell {
-            padding: 0.5rem;
-        }
-
-        .shift-container {
-            display: flex;
-            flex-direction: column;
-            gap: 0.375rem;
-        }
-
-        /* Shift Blocks */
-        .shift {
-            padding: 0.5rem 0.75rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-align: center;
-            position: relative;
-            transition: all 0.2s;
-            cursor: default;
-        }
-
-        .shift:hover {
-            transform: scale(1.02);
-        }
-
-        /* Time indicators */
-        .time-label {
-            font-size: 0.625rem;
-            font-weight: 600;
-            opacity: 0.7;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-right: 0.25rem;
-        }
-
-        /* Activity-specific colors */
-        .shift-umhs {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--umhs);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
-        .shift-umhs:hover {
-            background-color: rgba(59, 130, 246, 0.2);
-        }
-
-        .shift-va {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--va);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .shift-va:hover {
-            background-color: rgba(16, 185, 129, 0.2);
-        }
-
-        .shift-clinic {
-            background-color: rgba(249, 115, 22, 0.1);
-            color: var(--clinic);
-            border: 1px solid rgba(249, 115, 22, 0.3);
-        }
-
-        .shift-clinic:hover {
-            background-color: rgba(249, 115, 22, 0.2);
-        }
-
-        .shift-anes {
-            background-color: rgba(139, 92, 246, 0.1);
-            color: var(--anes);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-
-        .shift-anes:hover {
-            background-color: rgba(139, 92, 246, 0.2);
-        }
-
-        .shift-research {
-            background-color: rgba(6, 182, 212, 0.1);
-            color: var(--research);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-        }
-
-        .shift-research:hover {
-            background-color: rgba(6, 182, 212, 0.2);
-        }
-
-        .shift-orientation {
-            background-color: rgba(234, 179, 8, 0.1);
-            color: var(--orientation);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-        }
-
-        .shift-orientation:hover {
-            background-color: rgba(234, 179, 8, 0.2);
-        }
-
-        .shift-holiday {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--holiday);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .shift-holiday:hover {
-            background-color: rgba(239, 68, 68, 0.2);
-        }
-
-        /* Combined shifts (full day) */
-        .shift-combined {
-            padding: 1rem 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Empty state */
-        .empty-shift {
-            color: #9ca3af;
-            border: 1px dashed #e5e7eb;
-            background: transparent;
-        }
-
-        /* Loading and No Data states */
-        .message-container {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #6b7280;
-        }
-
-        .loading-spinner {
-            width: 3rem;
-            height: 3rem;
-            border: 3px solid #f3f4f6;
-            border-top-color: var(--mizzou-gold);
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Mobile Responsive - Compact View */
-        @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-
-            .header {
-                padding: 1rem 0;
-            }
-
-            .header h1 {
-                font-size: 1.25rem;
-            }
-
-            .header p {
+        
+        /* Desktop styles */
+        @media (min-width: 769px) {
+            th, td {
+                padding: 0.5rem;
+                text-align: left;
+                border-bottom: 1px solid #e5e7eb;
                 font-size: 0.875rem;
             }
-
-            .week-nav {
-                gap: 0.5rem;
-                margin: 1rem auto;
-                padding: 0 0.5rem;
-            }
-
-            .nav-button {
-                padding: 0.5rem;
-                font-size: 0;
-                border-radius: 8px;
-            }
-
-            .nav-button svg {
-                width: 24px;
-                height: 24px;
-            }
-
-            .week-display {
-                font-size: 0.875rem;
-                padding: 0.5rem;
-                min-width: auto;
-            }
-
-            .schedule-wrapper {
-                padding: 0 0.5rem;
-                margin: 0 auto 1rem;
-            }
-
-            .schedule-container {
-                border-radius: 8px;
-            }
-
-            .schedule-table {
-                font-size: 0.625rem;
-                min-width: 100%;
-            }
-
-            /* Ultra compact headers */
-            .schedule-table thead th {
-                padding: 0.5rem 0.25rem;
-                font-size: 0.625rem;
-            }
-
-            .schedule-table thead th:first-child {
-                width: 70px;
-                position: sticky;
-                left: 0;
-                background: #f9fafb;
-                z-index: 2;
-            }
-
-            .day-header {
-                gap: 0;
-            }
-
-            .day-name {
-                font-size: 0.625rem;
-                font-weight: 700;
-            }
-
-            .day-date {
-                font-size: 0.5rem;
-            }
-
-            /* Ultra compact cells */
-            .schedule-table tbody td {
-                padding: 0.25rem;
-            }
-
-            .schedule-table tbody td:first-child {
-                position: sticky;
-                left: 0;
-                background: white;
-                z-index: 1;
-                border-right: 1px solid #e5e7eb;
-            }
-
-            .schedule-table tbody tr:hover td:first-child {
-                background: #f9fafb;
-            }
-
-            .fellow-cell {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.125rem;
-            }
-
-            .fellow-cell span:first-child {
-                font-size: 0.7rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 60px;
-            }
-
             .pgy-badge {
-                font-size: 0.5rem;
+                background-color: var(--mizzou-gold-dark);
+                color: var(--mizzou-black);
                 padding: 0.125rem 0.375rem;
-                border-radius: 10px;
+                border-radius: 0.25rem;
+                font-size: 0.75rem;
+                margin-left: 0.5rem;
             }
-
-            /* Horizontal shift layout for mobile */
-            .day-cell {
-                padding: 0.125rem;
+        }
+        
+        /* Mobile compact styles */
+        @media (max-width: 768px) {
+            .mizzou-header h1 { font-size: 1.25rem; }
+            .mizzou-header p { font-size: 0.75rem; }
+            
+            table {
+                min-width: 420px; /* Accommodates full rotation names except Ori/🎆 */
             }
-
-            .shift-container {
-                flex-direction: row;
-                gap: 0.125rem;
+            
+            th, td {
+                padding: 0.125rem 0.25rem;
+                font-size: 0.625rem;
+                border-bottom: 1px solid #e5e7eb;
+                vertical-align: middle;
             }
-
-            .shift {
+            
+            /* Sticky header and first column */
+            thead th {
+                position: sticky;
+                top: 0;
+                background-color: var(--mizzou-black);
+                color: var(--mizzou-gold);
+                z-index: 10;
+                font-weight: 600;
+            }
+            
+            tbody td:first-child,
+            thead th:first-child {
+                position: sticky;
+                left: 0;
+                background-color: white;
+                z-index: 5;
+                font-weight: 600;
+                white-space: nowrap;
+                max-width: 60px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            thead th:first-child {
+                background-color: var(--mizzou-black);
+                z-index: 11;
+            }
+            
+            /* Ultra compact cells */
+            .shift-cell {
+                text-align: center;
+                line-height: 1.1;
+                position: relative;
+            }
+            
+            .am-shift, .pm-shift {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0.0625rem 0.125rem;
                 font-size: 0.5rem;
-                padding: 0.375rem 0.125rem;
-                border-radius: 4px;
-                flex: 1;
-                min-width: 0;
+                font-weight: 500;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                font-weight: 600;
-                border-width: 1px;
+                position: relative;
+                gap: 0.0625rem;
             }
-
-            .shift:hover {
-                transform: none;
+            
+            /* AM/PM indicators */
+            .time-indicator {
+                font-size: 0.425rem;
+                opacity: 0.75;
+                margin-right: 0.0625rem;
+                font-weight: 400;
+                flex-shrink: 0;
+                line-height: 1;
+                vertical-align: middle;
+                display: inline-block;
             }
-
-            .time-label {
-                font-size: 0.375rem;
-                margin-right: 0.125rem;
-                font-weight: 700;
+            
+            /* Uncomment to hide indicators for maximum space:
+            .time-indicator { display: none; }
+            */
+            
+            .am-indicator {
+                color: #f59e0b; /* Amber/gold for sun */
+                filter: brightness(1.1);
             }
-
-            /* Combined shifts stay vertical */
-            .shift-combined {
-                padding: 0.5rem 0.25rem;
+            
+            .pm-indicator {
+                color: #6366f1; /* Indigo/blue for moon */
+                filter: brightness(0.9);
+            }
+            
+            .shift-divider {
+                height: 1px;
+                background: #e5e7eb;
+                margin: 0.0625rem 0;
+                opacity: 0.5;
+            }
+            
+            /* PGY indicator - inline and tiny */
+            .pgy {
                 font-size: 0.5rem;
+                color: #6b7280;
+                font-weight: normal;
             }
-
-            .shift-container:has(.shift-combined) {
-                flex-direction: column;
-            }
-
-            /* Abbreviate text on mobile */
-            .shift-orientation .time-label,
-            .shift-holiday .time-label {
-                display: none;
-            }
-
-            /* Message container */
-            .message-container {
-                padding: 2rem 1rem;
-                font-size: 0.875rem;
-            }
-        }
-
-        /* Extra small devices */
-        @media (max-width: 375px) {
-            .schedule-table thead th:first-child {
-                width: 60px;
-            }
-
-            .fellow-cell span:first-child {
-                max-width: 50px;
+            
+            /* Day headers */
+            .day-header {
+                text-align: center;
                 font-size: 0.625rem;
+                padding: 0.25rem 0.125rem;
             }
-
-            .shift {
-                font-size: 0.45rem;
-                padding: 0.3rem 0.1rem;
+            
+            .date-label {
+                font-size: 0.5rem;
+                font-weight: normal;
+                opacity: 0.8;
             }
+            
+            /* Day columns minimum width */
+            td:not(:first-child) {
+                min-width: 60px;
+            }
+            
+            /* Color coding for different activities */
+            .umhs { color: #1e3a8a; }
+            .va { color: #166534; }
+            .clinic { color: #92400e; }
+            .anes { color: #5b21b6; }
+            .research { color: #0e7490; }
+            .orientation { color: #ea580c; background-color: #fef3c7; padding: 0 0.125rem; border-radius: 0.125rem; }
+            .holiday { font-size: 0.625rem; line-height: 1; }
+            
+            /* Row stripes */
+            tbody tr:nth-child(odd) { background-color: #ffffff; }
+            tbody tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
+            tbody tr:nth-child(odd) td:first-child { background-color: #ffffff; }
+            tbody tr:nth-child(even) td:first-child { background-color: var(--mizzou-gray-row); }
         }
-
-        /* Hide elements */
+        
+        /* Loading states */
+        .loading, .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
         .hidden {
             display: none;
         }
         
+        /* Navigation buttons */
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .nav-btn {
+            padding: 0.375rem 0.75rem;
+            background: #e5e7eb;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .nav-btn:active {
+            background: #d1d5db;
+        }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <h1>Weekly Schedule</h1>
-            <p>Mizzou Gastroenterology</p>
+<body class="p-2 md:p-8">
+    <div class="container mx-auto max-w-6xl">
+        <header class="mizzou-header">
+            <h1 class="text-xl md:text-3xl font-bold">Weekly Schedule</h1>
+            <p class="text-xs md:text-base">Mizzou Gastroenterology</p>
+        </header>
+
+        <div class="controls">
+            <select id="week-select" class="w-full md:w-auto">
+                <!-- Options populated by JavaScript -->
+            </select>
+            <div class="nav-buttons">
+                <button id="prev-week" class="nav-btn">← Prev</button>
+                <button id="next-week" class="nav-btn">Next →</button>
+            </div>
         </div>
-    </header>
 
-    <!-- Week Navigation -->
-    <div class="week-nav">
-        <button class="nav-button" id="prev-week">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5l-7 7 7 7"/>
-            </svg>
-        </button>
-        <select id="week-select" class="week-display"></select>
-        <button class="nav-button" id="next-week">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M8 5l7 7-7 7"/>
-            </svg>
-        </button>
-    </div>
-
-    <!-- Schedule Container -->
-    <div class="schedule-wrapper">
-        <div class="schedule-container">
-            <!-- Loading State -->
-            <div id="loading-message" class="message-container hidden">
-                <div class="loading-spinner"></div>
-                <p>Loading schedule...</p>
-            </div>
-            <!-- No Data State -->
-            <div id="no-data-message" class="message-container hidden">
-                <p>No schedule data available for this week.</p>
-            </div>
-            <!-- Schedule Table -->
-            <table class="schedule-table" id="schedule-table">
+        <div id="schedule-container" class="table-container">
+            <div id="loading-message" class="loading hidden">Loading schedule...</div>
+            <div id="no-data-message" class="no-data hidden">No schedule data available for this week.</div>
+            <table id="schedule-table">
                 <thead id="table-header">
                     <!-- Headers populated by JavaScript -->
                 </thead>
@@ -581,15 +269,30 @@
     </div>
 
     <script>
-        const AM_LABEL = 'AM';
-        const PM_LABEL = 'PM';
+        // Only abbreviations used:
+        // - Orientation → Ori
+        // - Holiday (any) → 🎆
+        // All other rotation names remain in full
+        
+        // Sun and moon indicators for AM/PM
+        // Option 1 (current): ☀/☽ (simple sun/crescent moon)
+        // Option 2: ☼/☾ (radiating sun/last quarter moon)
+        // Option 3: ○/● (day/night circles - more abstract)
+        // Option 4: ▲/▼ (up/down - more compact)
+        // Option 5: ᴬᴹ/ᴾᴹ (explicit text - clearest)
+        // Option 6: ⬆/⬇ (arrows - very compact)
+        // To remove indicators entirely, uncomment the CSS line that hides them
+        const AM_INDICATOR = '☀';
+        const PM_INDICATOR = '☽';
         
         // Special formatting for holidays and orientation only
         function formatSpecialContent(text) {
             if (!text) return text;
             const lower = text.toLowerCase();
+            // Use emoji only for any holiday
             if (lower.includes('holiday')) return '🎆';
-            if (lower === 'orientation') return 'Orientation';
+            // Abbreviate orientation
+            if (lower === 'orientation') return 'Ori';
             return text;
         }
 
@@ -597,14 +300,15 @@
         function getActivityClass(content) {
             if (!content) return '';
             const lower = content.toLowerCase();
-            if (lower.includes('umhs')) return 'shift-umhs';
-            if (lower.includes('va')) return 'shift-va';
-            if (lower.includes('eod')) return 'shift-clinic';
-            if (lower.includes('cc/') || lower.includes('amb/')) return 'shift-clinic';
-            if (lower.includes('anes')) return 'shift-anes';
-            if (lower.includes('research')) return 'shift-research';
-            if (lower.includes('orientation')) return 'shift-orientation';
-            if (lower.includes('holiday') || lower.includes('vacation')) return 'shift-holiday';
+            if (lower.includes('umhs')) return 'umhs';
+            if (lower.includes('va')) return 'va';
+            if (lower.includes('eod')) return 'clinic';
+            if (lower.includes('cc/') || lower.includes('amb/')) return 'clinic';
+            if (lower.includes('anes')) return 'anes';
+            if (lower.includes('research')) return 'research';
+            if (lower.includes('orientation')) return 'orientation';
+            if (lower.includes('holiday')) return 'holiday';
+            if (lower.includes('vacation')) return 'vacation';
             return '';
         }
 
@@ -700,8 +404,9 @@
 
         // Create table headers
         function createTableHeaders(startDate) {
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
+            const isMobile = window.innerWidth <= 768;
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+            
             const dates = days.map((_, idx) => {
                 const d = new Date(startDate);
                 d.setDate(d.getDate() + idx);
@@ -710,13 +415,11 @@
 
             const headerHtml = `
                 <tr>
-                    <th>Fellow</th>
+                    <th>Name</th>
                     ${days.map((day, i) => `
-                        <th>
-                            <div class="day-header">
-                                <span class="day-name">${day}</span>
-                                <span class="day-date">${dates[i]}</span>
-                            </div>
+                        <th class="day-header">
+                            ${day}
+                            ${isMobile ? `<br><span class="date-label">${dates[i]}</span>` : ` ${dates[i]}`}
                         </th>
                     `).join('')}
                 </tr>
@@ -730,89 +433,31 @@
             const pmClass = getActivityClass(pmContent);
             const amText = formatSpecialContent(amContent) || '-';
             const pmText = formatSpecialContent(pmContent) || '-';
-
-            const holidayCombined = amText === '🎆' && pmText === '🎆';
-            const orientationCombined = amContent && pmContent && amContent.toLowerCase().includes('orientation') && pmContent.toLowerCase().includes('orientation');
-
-            if (holidayCombined) {
+            
+            // Special case: if both AM and PM are the same holiday emoji, show it centered
+            if (amText === '🎆' && pmText === '🎆') {
                 return `
-                    <div class="shift-container">
-                        <div class="shift shift-holiday shift-combined">🎆 Holiday</div>
-                    </div>`;
+                    <div class="shift-cell">
+                        <div class="holiday" style="text-align: center; padding: 0.125rem 0; font-size: 0.625rem;">
+                            🎆
+                        </div>
+                    </div>
+                `;
             }
-
-            if (orientationCombined) {
-                return `
-                    <div class="shift-container">
-                        <div class="shift shift-orientation shift-combined">Orientation</div>
-                    </div>`;
-            }
-
+            
             return `
-                <div class="shift-container">
-                    <div class="shift ${amClass}"><span class="time-label">${AM_LABEL}</span>${amText}</div>
-                    <div class="shift ${pmClass}"><span class="time-label">${PM_LABEL}</span>${pmText}</div>
-                </div>`;
-        }
-
-        // Helper functions for mobile abbreviations
-        const abbreviations = {
-            'UMHS-1': 'U1',
-            'UMHS-2': 'U2',
-            'VA1': 'V1',
-            'VA2': 'V2',
-            'VA3': 'V3',
-            'EOD1': 'E1',
-            'CC/JB': 'CC',
-            'CC/PC': 'CC',
-            'CC/VA2': 'CV2',
-            'CC/VA3': 'CV3',
-            'Amb/JB': 'AJ',
-            'Amb/PC': 'AP',
-            'Amb/GH': 'AG',
-            'Amb/KA': 'AK',
-            'Priv Anes': 'PA',
-            'Research': 'Res',
-            'Orientation': 'Ori',
-            'Holiday': '🎆'
-        };
-
-        function isMobile() {
-            return window.innerWidth <= 768;
-        }
-
-        function abbreviateForMobile(text) {
-            if (!isMobile() || !text) return text;
-            if (text.includes('🎆')) return '🎆';
-            return abbreviations[text] || text;
-        }
-
-        function updateShiftText() {
-            const shifts = document.querySelectorAll('.shift');
-            shifts.forEach(shift => {
-                let originalText = shift.getAttribute('data-original');
-                if (!originalText) {
-                    const timeLabel = shift.querySelector('.time-label');
-                    originalText = shift.textContent.replace(timeLabel ? timeLabel.textContent : '', '').trim();
-                    shift.setAttribute('data-original', originalText);
-                }
-
-                const timeLabel = shift.querySelector('.time-label');
-                const abbreviatedText = abbreviateForMobile(originalText);
-                if (timeLabel) {
-                    shift.innerHTML = `<span class="time-label">${timeLabel.textContent}</span>${abbreviatedText}`;
-                } else {
-                    shift.textContent = abbreviatedText;
-                }
-            });
-
-            const dayNames = document.querySelectorAll('.day-name');
-            const dayAbbrev = { 'Monday':'Mon','Tuesday':'Tue','Wednesday':'Wed','Thursday':'Thu','Friday':'Fri' };
-            dayNames.forEach(day => {
-                const original = day.getAttribute('data-original') || day.textContent;
-                day.setAttribute('data-original', original);
-                day.textContent = isMobile() ? (dayAbbrev[original] || original) : original;
-            });
+                <div class="shift-cell">
+                    <div class="am-shift ${amClass}">
+                        <span class="time-indicator am-indicator">${AM_INDICATOR}</span>
+                        ${amText}
+                    </div>
+                    <div class="shift-divider"></div>
+                    <div class="pm-shift ${pmClass}">
+                        <span class="time-indicator pm-indicator">${PM_INDICATOR}</span>
+                        ${pmText}
+                    </div>
+                </div>
+            `;
         }
 
         // Sample data for week_6_30_25.csv
@@ -833,7 +478,7 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
         // Load schedule
         async function loadSchedule(weekFile, startDate) {
             currentWeekFile = weekFile;
-            const mobile = isMobile();
+            const isMobile = window.innerWidth <= 768;
             const loadingMsg = document.getElementById('loading-message');
             const noDataMsg = document.getElementById('no-data-message');
             const table = document.getElementById('schedule-table');
@@ -868,7 +513,7 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
                 const rowsHtml = parsedData.data.map(row => {
                     const name = row.NAME || '';
                     const pgy = row.PGY || '';
-                    const nameCell = mobile
+                    const nameCell = isMobile 
                         ? `<td>${name}<span class="pgy">${pgy ? `-${pgy}` : ''}</span></td>`
                         : `<td>${name}<span class="pgy-badge">PGY-${pgy}</span></td>`;
                     
@@ -890,7 +535,6 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
                 tableBody.innerHTML = rowsHtml;
                 loadingMsg.classList.add('hidden');
                 table.style.display = 'table';
-                updateShiftText();
                 
             } catch (error) {
                 loadingMsg.classList.add('hidden');
@@ -944,7 +588,9 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
             let resizeTimer;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(updateShiftText, 150);
+                resizeTimer = setTimeout(() => {
+                    loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
+                }, 250);
             });
         }
 
