@@ -185,17 +185,32 @@
             padding: 0.125rem 0.25rem;
             vertical-align: middle;
         }
-        .compact-view thead th,
-        .compact-view tbody td {
-            position: static !important;
-            left: auto !important;
+        .compact-view thead th {
+            position: sticky;
+            top: 0;
+            background-color: var(--mizzou-black);
+            color: var(--mizzou-gold);
+            z-index: 10;
+            font-weight: 600;
         }
-        .compact-view tbody td:nth-child(1) {
-            min-width: 60px;
+        .compact-view thead th:first-child {
+            background-color: var(--mizzou-black);
+            z-index: 11;
+        }
+        .compact-view tbody td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: white;
+            z-index: 5;
+            font-weight: 600;
+            white-space: nowrap;
             max-width: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            min-width: 60px;
+        }
+        .compact-view td:not(:first-child) {
+            min-width: 60px;
         }
         .compact-view .orientation-cell,
         .compact-view .holiday-cell,
