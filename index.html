@@ -44,13 +44,13 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         /* Base table styles */
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        
+
         /* Desktop styles */
         @media (min-width: 769px) {
             th, td {
@@ -68,23 +68,23 @@
                 margin-left: 0.5rem;
             }
         }
-        
+
         /* Mobile compact styles */
         @media (max-width: 768px) {
             .mizzou-header h1 { font-size: 1.25rem; }
             .mizzou-header p { font-size: 0.75rem; }
-            
+
             table {
                 min-width: 420px; /* Accommodates full rotation names except Ori/🎆 */
             }
-            
+
             th, td {
                 padding: 0.125rem 0.25rem;
                 font-size: 0.625rem;
                 border-bottom: 1px solid #e5e7eb;
                 vertical-align: middle;
             }
-            
+
             /* Sticky header and first column */
             thead th {
                 position: sticky;
@@ -94,7 +94,7 @@
                 z-index: 10;
                 font-weight: 600;
             }
-            
+
             tbody td:first-child,
             thead th:first-child {
                 position: sticky;
@@ -107,19 +107,19 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            
+
             thead th:first-child {
                 background-color: var(--mizzou-black);
                 z-index: 11;
             }
-            
+
             /* Ultra compact cells */
             .shift-cell {
                 text-align: center;
                 line-height: 1.1;
                 position: relative;
             }
-            
+
             .am-shift, .pm-shift {
                 display: flex;
                 align-items: center;
@@ -133,7 +133,7 @@
                 position: relative;
                 gap: 0.0625rem;
             }
-            
+
             /* AM/PM indicators */
             .time-indicator {
                 font-size: 0.425rem;
@@ -145,53 +145,53 @@
                 vertical-align: middle;
                 display: inline-block;
             }
-            
+
             /* Uncomment to hide indicators for maximum space:
             .time-indicator { display: none; }
             */
-            
+
             .am-indicator {
                 color: #f59e0b; /* Amber/gold for sun */
                 filter: brightness(1.1);
             }
-            
+
             .pm-indicator {
                 color: #6366f1; /* Indigo/blue for moon */
                 filter: brightness(0.9);
             }
-            
+
             .shift-divider {
                 height: 1px;
                 background: #e5e7eb;
                 margin: 0.0625rem 0;
                 opacity: 0.5;
             }
-            
+
             /* PGY indicator - inline and tiny */
             .pgy {
                 font-size: 0.5rem;
                 color: #6b7280;
                 font-weight: normal;
             }
-            
+
             /* Day headers */
             .day-header {
                 text-align: center;
                 font-size: 0.625rem;
                 padding: 0.25rem 0.125rem;
             }
-            
+
             .date-label {
                 font-size: 0.5rem;
                 font-weight: normal;
                 opacity: 0.8;
             }
-            
+
             /* Day columns minimum width */
             td:not(:first-child) {
                 min-width: 60px;
             }
-            
+
             /* Color coding for different activities */
             .umhs { color: #1e3a8a; }
             .va { color: #166534; }
@@ -200,14 +200,14 @@
             .research { color: #0e7490; }
             .orientation { color: #ea580c; background-color: #fef3c7; padding: 0 0.125rem; border-radius: 0.125rem; }
             .holiday { font-size: 0.625rem; line-height: 1; }
-            
+
             /* Row stripes */
             tbody tr:nth-child(odd) { background-color: #ffffff; }
             tbody tr:nth-child(even) { background-color: var(--mizzou-gray-row); }
             tbody tr:nth-child(odd) td:first-child { background-color: #ffffff; }
             tbody tr:nth-child(even) td:first-child { background-color: var(--mizzou-gray-row); }
         }
-        
+
         /* Loading states */
         .loading, .no-data {
             text-align: center;
@@ -217,7 +217,7 @@
         .hidden {
             display: none;
         }
-        
+
         /* Navigation buttons */
         .nav-buttons {
             display: flex;
@@ -273,7 +273,7 @@
         // - Orientation → Ori
         // - Holiday (any) → 🎆
         // All other rotation names remain in full
-        
+
         // Sun and moon indicators for AM/PM
         // Option 1 (current): ☀/☽ (simple sun/crescent moon)
         // Option 2: ☼/☾ (radiating sun/last quarter moon)
@@ -284,7 +284,7 @@
         // To remove indicators entirely, uncomment the CSS line that hides them
         const AM_INDICATOR = '☀';
         const PM_INDICATOR = '☽';
-        
+
         // Special formatting for holidays and orientation only
         function formatSpecialContent(text) {
             if (!text) return text;
@@ -324,7 +324,7 @@
                 const weekStart = new Date(currentDate);
                 const weekEnd = new Date(currentDate);
                 weekEnd.setDate(weekEnd.getDate() + 4);
-                
+
                 const formatDate = (date, includeYear) => {
                     const month = date.getMonth() + 1;
                     const day = date.getDate();
@@ -334,23 +334,23 @@
                     }
                     return `${month}/${day}`;
                 };
-                
+
                 const startYear = weekStart.getFullYear();
                 const endYear = weekEnd.getFullYear();
                 const includeEndYear = startYear !== endYear;
-                
+
                 const weekString = `${formatDate(weekStart, false)}-${formatDate(weekEnd, includeEndYear)}`;
                 const fileName = `week_${(weekStart.getMonth() + 1)}_${weekStart.getDate()}_${weekStart.getFullYear().toString().slice(-2)}.csv`;
-                
+
                 weeks.push({
                     display: weekString,
                     file: fileName,
                     startDate: new Date(weekStart)
                 });
-                
+
                 currentDate.setDate(currentDate.getDate() + 7);
             }
-            
+
             return weeks;
         }
 
@@ -358,12 +358,12 @@
         function getCurrentWeek(weeks) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             for (let i = 0; i < weeks.length; i++) {
                 const weekStart = new Date(weeks[i].startDate);
                 const weekEnd = new Date(weekStart);
                 weekEnd.setDate(weekEnd.getDate() + 4);
-                
+
                 if (today >= weekStart && today <= weekEnd) {
                     return i;
                 }
@@ -406,7 +406,7 @@
         function createTableHeaders(startDate) {
             const isMobile = window.innerWidth <= 768;
             const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-            
+
             const dates = days.map((_, idx) => {
                 const d = new Date(startDate);
                 d.setDate(d.getDate() + idx);
@@ -433,7 +433,7 @@
             const pmClass = getActivityClass(pmContent);
             const amText = formatSpecialContent(amContent) || '-';
             const pmText = formatSpecialContent(pmContent) || '-';
-            
+
             // Special case: if both AM and PM are the same holiday emoji, show it centered
             if (amText === '🎆' && pmText === '🎆') {
                 return `
@@ -444,7 +444,7 @@
                     </div>
                 `;
             }
-            
+
             return `
                 <div class="shift-cell">
                     <div class="am-shift ${amClass}">
@@ -484,14 +484,14 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
             const table = document.getElementById('schedule-table');
             const tableHeader = document.getElementById('table-header');
             const tableBody = document.getElementById('table-body');
-            
+
             loadingMsg.classList.remove('hidden');
             noDataMsg.classList.add('hidden');
             table.style.display = 'none';
-            
+
             try {
                 let csvText;
-                
+
                 // Use sample data if available, otherwise try to fetch
                 if (sampleData[weekFile]) {
                     csvText = sampleData[weekFile];
@@ -500,42 +500,42 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
                     if (!response.ok) throw new Error('File not found');
                     csvText = await response.text();
                 }
-                
+
                 const parsedData = parseCSV(csvText);
-                
+
                 if (!parsedData || parsedData.data.length === 0) {
                     throw new Error('No data');
                 }
-                
+
                 tableHeader.innerHTML = createTableHeaders(startDate);
 
                 // Create rows
                 const rowsHtml = parsedData.data.map(row => {
                     const name = row.NAME || '';
                     const pgy = row.PGY || '';
-                    const nameCell = isMobile 
+                    const nameCell = isMobile
                         ? `<td>${name}<span class="pgy">${pgy ? `-${pgy}` : ''}</span></td>`
                         : `<td>${name}<span class="pgy-badge">PGY-${pgy}</span></td>`;
-                    
+
                     const cells = [nameCell];
-                    
+
                     // Add day cells
                     for (let d = 0; d < 5; d++) {
                         const amKey = d === 0 ? 'AM' : `AM${d + 1}`;
                         const pmKey = d === 0 ? 'PM' : `PM${d + 1}`;
                         const amContent = row[amKey] || '';
                         const pmContent = row[pmKey] || '';
-                        
+
                         cells.push(`<td>${styleCellContent(amContent, pmContent)}</td>`);
                     }
-                    
+
                     return `<tr>${cells.join('')}</tr>`;
                 }).join('');
-                
+
                 tableBody.innerHTML = rowsHtml;
                 loadingMsg.classList.add('hidden');
                 table.style.display = 'table';
-                
+
             } catch (error) {
                 loadingMsg.classList.add('hidden');
                 noDataMsg.classList.remove('hidden');
@@ -549,7 +549,7 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
             const prevBtn = document.getElementById('prev-week');
             const nextBtn = document.getElementById('next-week');
             const weeks = generateWeeks();
-            
+
             weeks.forEach((week, index) => {
                 const option = document.createElement('option');
                 option.value = week.file;
@@ -557,12 +557,12 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
                 option.dataset.index = index;
                 weekSelect.appendChild(option);
             });
-            
+
             let currentWeekIndex = getCurrentWeek(weeks);
             weekSelect.selectedIndex = currentWeekIndex;
-            
+
             loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
-            
+
             weekSelect.addEventListener('change', (e) => {
                 currentWeekIndex = e.target.selectedIndex;
                 loadSchedule(e.target.value, weeks[currentWeekIndex].startDate);
@@ -583,7 +583,7 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
                     weekSelect.dispatchEvent(new Event('change'));
                 }
             });
-            
+
             // Reload on window resize to adjust for mobile/desktop
             let resizeTimer;
             window.addEventListener('resize', () => {
