@@ -408,6 +408,7 @@
             const weeks = [];
             let currentDate = new Date(2025, 5, 30);
             const endDate = new Date(2026, 5, 26);
+            let weekNumber = 1;
 
             while (currentDate <= endDate) {
                 const weekStart = new Date(currentDate);
@@ -428,16 +429,18 @@
                 const endYear = weekEnd.getFullYear();
                 const includeEndYear = startYear !== endYear;
                 
-                const weekString = `${formatDate(weekStart, false)}-${formatDate(weekEnd, includeEndYear)}`;
-                const fileName = `week_${(weekStart.getMonth() + 1)}_${weekStart.getDate()}_${weekStart.getFullYear().toString().slice(-2)}.csv`;
-                
+                const numberStr = String(weekNumber).padStart(2, '0');
+                const weekString = `${numberStr} - ${formatDate(weekStart, false)}-${formatDate(weekEnd, includeEndYear)}`;
+                const fileName = `${numberStr}_week_${(weekStart.getMonth() + 1)}_${weekStart.getDate()}_${weekStart.getFullYear().toString().slice(-2)}.csv`;
+
                 weeks.push({
                     display: weekString,
                     file: fileName,
                     startDate: new Date(weekStart)
                 });
-                
+
                 currentDate.setDate(currentDate.getDate() + 7);
+                weekNumber += 1;
             }
             
             return weeks;
@@ -555,9 +558,9 @@
             `;
         }
 
-        // Sample data for week_6_30_25.csv
+        // Sample data for 01_week_6_30_25.csv
         const sampleData = {
-            'week_6_30_25.csv': `NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
+            '01_week_6_30_25.csv': `NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
 Tarar,6,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,VA1,UMHS-2,UMHS-2,Holiday (4th of July),Holiday (4th of July)
 Mansour,6,EOD1,CC/JB,Priv Anes,Priv Anes,EOD1,Research,Priv Anes,Priv Anes,Holiday (4th of July),Holiday (4th of July)
 Deda,6,VA2,CC/VA2,VA2,VA2,VA2,VA2,VA2,VA2,Holiday (4th of July),Holiday (4th of July)
