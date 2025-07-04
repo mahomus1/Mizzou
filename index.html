@@ -62,12 +62,31 @@
             flex-wrap: wrap;
         }
         select {
-            padding: 0.375rem 0.5rem;
+            padding: 0.75rem;
             font-size: 0.875rem;
+            line-height: 1.5;
             border-radius: 0.25rem;
             border: 1px solid #d1d5db;
             width: 100%;
         }
+        optgroup {
+            font-weight: 600;
+            color: #000;
+            background-color: #f3f4f6;
+            font-style: normal;
+        }
+        
+        option {
+            font-weight: normal;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        option.current-week {
+            background-color: #FEF3C7;
+            font-weight: 600;
+            color: #92400E;
+        }
+
         .table-container {
             background-color: white;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -157,6 +176,10 @@
         @media (max-width: 768px) {
             .mizzou-header h1 { font-size: 1.25rem; }
             .mizzou-header p { font-size: 0.75rem; }
+            select {
+                font-size: 1rem;
+                padding: 0.875rem;
+            }
             
             table {
                 min-width: 420px; /* Accommodates full rotation names except Ori/🎆 */
@@ -404,17 +427,25 @@
         let currentWeekFile = '';
 
         // Generate weeks
+
         function generateWeeks() {
             const weeks = [];
             let currentDate = new Date(2025, 5, 30);
             const endDate = new Date(2026, 5, 26);
             let weekNumber = 1;
 
+            // Helper function for nice date formatting
+            const formatDateNice = (date) => {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return `${months[date.getMonth()]} ${date.getDate()}`;
+            };
+
             while (currentDate <= endDate) {
                 const weekStart = new Date(currentDate);
                 const weekEnd = new Date(currentDate);
                 weekEnd.setDate(weekEnd.getDate() + 4);
-                
+        
                 const formatDate = (date, includeYear) => {
                     const month = date.getMonth() + 1;
                     const day = date.getDate();
@@ -424,28 +455,31 @@
                     }
                     return `${month}/${day}`;
                 };
-                
+        
                 const startYear = weekStart.getFullYear();
                 const endYear = weekEnd.getFullYear();
                 const includeEndYear = startYear !== endYear;
-                
+        
                 const numberStr = String(weekNumber).padStart(2, '0');
-                const weekString = `${numberStr} - ${formatDate(weekStart, false)}-${formatDate(weekEnd, includeEndYear)}`;
+        
+                // Use the nice format for display
+                const weekString = `Week ${weekNumber} \u2022 ${formatDateNice(weekStart)} - ${formatDateNice(weekEnd)}`;
+        
                 const fileName = `${numberStr}_week_${(weekStart.getMonth() + 1)}_${weekStart.getDate()}_${weekStart.getFullYear().toString().slice(-2)}.csv`;
 
                 weeks.push({
                     display: weekString,
                     file: fileName,
-                    startDate: new Date(weekStart)
+                    startDate: new Date(weekStart),
+                    weekNumber: weekNumber
                 });
 
                 currentDate.setDate(currentDate.getDate() + 7);
                 weekNumber += 1;
             }
-            
+        
             return weeks;
         }
-
         // Get current week
         function getCurrentWeek(weeks) {
             const today = new Date();
@@ -642,56 +676,106 @@ Mahdi,4,Orientation,Orientation,Orientation,Orientation,Orientation,Orientation,
         }
 
         // Initialize
+
         function init() {
             const weekSelect = document.getElementById('week-select');
             const prevBtn = document.getElementById('prev-week');
             const nextBtn = document.getElementById('next-week');
             const weeks = generateWeeks();
-            
-            weeks.forEach((week, index) => {
-                const option = document.createElement('option');
-                option.value = week.file;
-                option.textContent = week.display;
-                option.dataset.index = index;
-                weekSelect.appendChild(option);
-            });
-            
+        
+            // Get current week index
             let currentWeekIndex = getCurrentWeek(weeks);
-            weekSelect.selectedIndex = currentWeekIndex;
-            
-            loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
-            
+        
+            // Group weeks by month
+            const weeksByMonth = {};
+            weeks.forEach((week, index) => {
+                const monthYear = week.startDate.toLocaleString('default', {
+                    month: 'long',
+                    year: 'numeric'
+                });
+        
+                if (!weeksByMonth[monthYear]) {
+                    weeksByMonth[monthYear] = [];
+                }
+        
+                weeksByMonth[monthYear].push({
+                    ...week,
+                    index: index,
+                    isCurrent: index === currentWeekIndex
+                });
+            });
+        
+            // Create optgroups and populate the select
+            Object.entries(weeksByMonth).forEach(([monthYear, monthWeeks]) => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = monthYear;
+        
+                monthWeeks.forEach(week => {
+                    const option = document.createElement('option');
+                    option.value = week.file;
+                    option.textContent = week.isCurrent ? `${week.display} \u2605` : week.display;
+                    option.dataset.index = week.index;
+        
+                    // Add styling class for current week
+                    if (week.isCurrent) {
+                        option.className = 'current-week';
+                        option.selected = true;
+                    }
+        
+                    optgroup.appendChild(option);
+                });
+        
+                weekSelect.appendChild(optgroup);
+            });
+        
+            // Load initial schedule
+            loadSchedule(weeks[currentWeekIndex].file, weeks[currentWeekIndex].startDate);
+        
+            // Update the change event handler
             weekSelect.addEventListener('change', (e) => {
-                currentWeekIndex = e.target.selectedIndex;
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                currentWeekIndex = parseInt(selectedOption.dataset.index);
                 loadSchedule(e.target.value, weeks[currentWeekIndex].startDate);
             });
 
+            // Update navigation buttons
             prevBtn.addEventListener('click', () => {
                 if (currentWeekIndex > 0) {
                     currentWeekIndex -= 1;
-                    weekSelect.selectedIndex = currentWeekIndex;
-                    weekSelect.dispatchEvent(new Event('change'));
+                    // Find and select the correct option
+                    const options = weekSelect.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (parseInt(option.dataset.index) === currentWeekIndex) {
+                            option.selected = true;
+                            weekSelect.dispatchEvent(new Event('change'));
+                        }
+                    });
                 }
             });
 
             nextBtn.addEventListener('click', () => {
                 if (currentWeekIndex < weeks.length - 1) {
                     currentWeekIndex += 1;
-                    weekSelect.selectedIndex = currentWeekIndex;
-                    weekSelect.dispatchEvent(new Event('change'));
+                    // Find and select the correct option
+                    const options = weekSelect.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (parseInt(option.dataset.index) === currentWeekIndex) {
+                            option.selected = true;
+                            weekSelect.dispatchEvent(new Event('change'));
+                        }
+                    });
                 }
             });
-            
+        
             // Reload on window resize to adjust for mobile/desktop
             let resizeTimer;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    loadSchedule(weekSelect.value, weeks[currentWeekIndex].startDate);
+                    loadSchedule(weeks[currentWeekIndex].file, weeks[currentWeekIndex].startDate);
                 }, 250);
             });
         }
-
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
