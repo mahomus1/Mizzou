@@ -447,16 +447,22 @@
         function getCurrentWeek(weeks) {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             for (let i = 0; i < weeks.length; i++) {
                 const weekStart = new Date(weeks[i].startDate);
-                const weekEnd = new Date(weekStart);
-                weekEnd.setDate(weekEnd.getDate() + 4);
-                
-                if (today >= weekStart && today <= weekEnd) {
+                const nextWeekStart = new Date(weekStart);
+                nextWeekStart.setDate(nextWeekStart.getDate() + 7);
+
+                if (today >= weekStart && today < nextWeekStart) {
+                    // If it's Friday or later in the current week, advance to next week
+                    if (today.getDay() >= 5) {
+                        return Math.min(i + 1, weeks.length - 1);
+                    }
                     return i;
                 }
             }
+
+            // Default to the first week if no match
             return 0;
         }
 
