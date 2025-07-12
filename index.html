@@ -27,6 +27,7 @@
             --vacation: #f472b6;
             --out: #6b7280;
             --elective: #0ea5e9;
+            --advendo: #d946ef;
         }
 
         body {
@@ -153,7 +154,12 @@
             color: var(--elective);
             border: 1px solid rgba(14, 165, 233, 0.3);
         }
-        
+        .advendo {
+            background-color: rgba(217, 70, 239, 0.1);
+            color: var(--advendo);
+            border: 1px solid rgba(217, 70, 239, 0.3);
+        }
+
         /* Desktop styles */
         @media (min-width: 769px) {
             th, td {
@@ -417,6 +423,7 @@
             if (lower.includes('anes')) return 'anes';
             if (lower.includes('research')) return 'research';
             if (lower.includes('orientation')) return 'orientation';
+            if (lower.includes('adv endo') || lower.includes('advanced endo')) return 'advendo';
             if (lower.includes('holiday')) return 'holiday';
             if (lower.includes('vacation')) return 'vacation';
             if (lower.includes('out')) return 'out';
