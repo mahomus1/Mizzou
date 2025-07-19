@@ -1,11 +1,11 @@
 NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
-Tarar,6,,,,,,,,,
-Mansour,6,,,,,,,,,
-Deda,6,,,,,,,,,
-Fard,5,,,,,,,,,
-Gandhi,5,,,,,,,,,
-Islam,5,,,,,,,,,
-Ali,4,,,,,,,,,
-Merchant,4,,,,,,,,,
-Zaher,4,,,,,,,,,
-Mahdi,4,,,,,,,,,
+Tarar,6,VA2,VA2,VA2,VA2,VA2,VA1,VA2,VA2,VA2,VA2
+Mansour,6,EOD1,CC/JB,EOD1,Research,EOD1,Research,EOD1,EOD1,EOD1,Research
+Deda,6,Prive Anes,VA5,Prive Anes,Prive Anes,Prive Anes,Prive Anes,Prive Anes,Prive Anes,Prive Anes,Priv Anes
+Fard,5,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1
+Gandhi,5,VA1,VA1,VA1,VA1,VA1,CC/PC,VA1,VA1,VA1,VA1
+Islam,5,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,CC/PC,UMHS-2,UMHS-2,UMHS-2,UMHS-2
+Ali,4,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation
+Merchant,4,Research,Amb/JB,Amb/GH,Amb/KA,Amb/PC,Research,Research,Research,Amb/KA,CC/KA
+Zaher,4,VA3,VA3,VA3,CC/KA,VA3,VA2,VA3,VA3,VA3,VA3
+Mahdi,4,VA4,VA4,VA4,VA3,VA4,VA3,VA4,VA4,VA4,CC/KA
