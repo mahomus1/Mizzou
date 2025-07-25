@@ -1,11 +1,11 @@
 NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
-Tarar,6,,,,,,,,,
-Mansour,6,,,,,,,,,
-Deda,6,,,,,,,,,
-Fard,5,,,,,,,,,
-Gandhi,5,,,,,,,,,
-Islam,5,,,,,,,,,
-Ali,4,,,,,,,,,
-Merchant,4,,,,,,,,,
-Zaher,4,,,,,,,,,
-Mahdi,4,,,,,,,,,
+Tarar,6,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1
+Mansour,6,EOD1,CC/JB,Priv Anes,Priv Anes,EOD1,EOD1,Priv Anes,Priv Anes,EOD1,EOD1
+Deda,6,VA4,VA4,VA4,VA4,VA4,VA3,VA4,VA4,VA4,VA4
+Fard,5,VA3,VA3,VA3,VA2,VA3,CC/PC,VA3,VA3,VA3,VA3
+Gandhi,5,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,CC/PC,UMHS-2,UMHS-2,UMHS-2,UMHS-2
+Islam,5,Research,Research,Research,CC/KA,Research,Research,Research,Research,Research,Research
+Ali,4,VA1,VA1,VA1,VA1,VA1,VA1,VA1,VA1,VA1,CC/KA
+Merchant,4,Research,Research,Research,Research,Research,Research,Research,Research,OUT,OUT
+Zaher,4,Research,Amb/JB,Amb/KA,VA3,Amb/PC,Research,Research,Amb/KA,Amb/KA,CC/KA
+Mahdi,4,VA2,VA2,VA2,CC/KA,VA2,VA2,VA2,VA2,VA2,VA2
