@@ -1,11 +1,11 @@
 NAME,PGY,AM,PM,AM,PM,AM,PM,AM,PM,AM,PM
-Tarar,6,UMHS-2,VA3,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2
-Mansour,6,VA3,CC/JB,VA3,VA3,VA3,VA3,VA3,VA3,VA3,VA3
-Deda,6,EOD1,VA4,EOD1,EOD1,EOD1,EOD1,EOD1,EOD1,EOD1,EOD1
-Fard,5,VA2,VA2,VA2,CC/KA,VA2,VA2,VA2,VA2,VA2,VA1
-Gandhi,5,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1
-Islam,5,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation
-Ali,4,VA4,Amb/JB,VA4,VA2,VA4,Amb/AI,VA4,VA4,VA4,CC/KA
-Merchant,4,VA1,VA1,VA1,VA1,VA1,VA1,VA1,VA1,VA1,CC/KA
-Zaher,4,Research,Research,Research,CC/KA,Research,Research,Research,Research,Research,Research
-Mahdi,4,OUT,OUT,Amb/KA,VA4,Amb/AI,CC/PC,Amb/AI,Amb/AI,Amb/KA,VA4
+Tarar,6,EOD1,VA5,Priv Anes,Priv Anes,EOD1,VA2,EOD1,EOD1,EOD1,Adv Endo
+Mansour,6,Priv Anes,CC/JB,Research,Research,EOD2 (K),EOD2 (K),Priv Anes,Priv Anes,Priv Anes,Priv Anes
+Deda,6,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1,UMHS-1
+Fard,5,UMHS-2,UMHS-2,UMHS-2,CC/KA,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2,UMHS-2
+Gandhi,5,VA2,VA2,VA2,VA2,VA2,CC/PC,VA2,VA2,VA2,VA2
+Islam,5,VA4,VA4,VA3,VA1,VA4,CC/AL,VA4,VA4,VA4,VA4
+Ali,4,VA3,VA3,Amb/GH,VA3,VA3,VA1,VA3,VA3,VA3,CC/KA
+Merchant,4,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation,Vacation
+Zaher,4,Research,Amb/JB,OUT,OUT,Amb/PC,Amb/PC,Amb/MJ,Research,Amb/KA,VA3
+Mahdi,4,VA1,VA1,VA1,Amb/KA,VA1,CC/PC,VA1,VA1,VA1,VA1
